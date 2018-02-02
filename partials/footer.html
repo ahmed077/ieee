@@ -1,0 +1,89 @@
+<?php if ($returnTop) { ?>
+<button onclick="topFunction()" id="topBtn" class="go-to-top" title="Go to top">
+    <i class="fa fa-chevron-up" aria-hidden="true"></i>
+</button>
+<script src="js/topBtn.js"></script>
+<?php } ?>
+<footer id="colophon" class="site-footer">
+    <div class="footer-info">
+        <div class="container">
+            <div class="row">
+                <div class="footer-logo col-md-3">
+                    <a href="index.html" title="Sekolah" rel="home">
+                        <img src="images/ieee-logo.png" alt="IEEEPUAsb_logo" title="IEEE PUA SB">
+                    </a>
+                </div>
+                <div class="footer-menu col-md-9">
+                    <div class="footer-links">
+                        <ul>
+                            <li style="color: white">About</li>
+                            <li><a href="contact.html">Contact Us</a></li>
+                            <li><a href="committee.html">Committees</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links">
+                        <ul>
+                            <li style="color: white">Our Events</li>
+                            <li><a href="schedule.html">Schedule</a></li>
+                            <li><a href="gallery.html">Gallery </a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links">
+                        <ul>
+                            <li style="color: white">Blog</li>
+                            <li><a href="news.html">Latest News</a></li>
+                            <li><a href="events.html">Events</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links">
+                        <ul>
+                            <li style="color: white">Our Team</li>
+                            <li><a href="board.html">Board</a></li>
+                            <li><a href="volunteers.html">Volunteers</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links">
+                        <ul class="social">
+                            <li class="facebook">
+                                <a href="https://www.facebook.com/IEEEPUA" target="_blank">
+                                    <i class="fa fa-facebook" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            <li class="insta">
+                                <a href="https://www.instagram.com/ieeepuasb/" target="_blank">
+                                    <i class="fa fa-instagram" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            <li class="youtube">
+                                <a href="https://www.youtube.com/channel/UCYQM_YQPQWen7LocvZ0XN2w" target="_blank">
+                                    <i class="fa fa-play" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            <div class="row">
+                <p>Copyrights &copy; IEEE PUA SB | Web Development Committee 2017</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="js/jquery-3.2.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-datepicker.min.js"></script>
+<script src="js/bootstrap-select.min.js"></script>
+<script src="js/featherlight.min.js"></script>
+<script src="js/bootstrap.offcanvas.min.js"></script>
+<?php if (isset($noBtns) && $noBtns) {?>
+<?php } else {?>
+<script src="js/<?php echo strtolower($title);?>.js"></script>
+<?php }?>
+</body>
+</html>

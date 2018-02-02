@@ -1,0 +1,63 @@
+/*Events Custom Styles*/
+.events-list .events-item .events-item-img a {
+    height:154px;
+    background-position: center;
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-clip: border-box;
+    display:block;
+}
+.add-event {
+    margin-top:50px !important;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+.add-event-form {
+    padding-top:110px;
+    padding-bottom:50px;
+}
+.add-event-form label {
+    margin-bottom:5px;
+    font-size:14px;
+}
+.add-event-form textarea {
+    resize:vertical;
+}
+.add-event-form .error{
+    border-color:#dc3545;
+}
+.events-single-content {
+    padding: 120px 0 70px;
+}
+.speakers {
+    display: flex;
+    justify-content: flex-start;
+    align-items:center;
+    flex-wrap: wrap;
+}
+.speakers input {
+    max-width:200px;
+    margin:0 10px 10px;
+}
+/*Events Page End*/
+
+/*Login Page*/
+.login-hero{
+    position: relative;
+    background:rgb(15, 78, 163);
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    margin: 0 0 -85px;
+    min-height: 364px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.login-hero h2 {
+    color : whitesmoke;
+    text-align: center;
+    font-size: 50px;
+}
