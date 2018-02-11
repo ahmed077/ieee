@@ -1,14 +1,14 @@
 <?php
 ob_start();
 session_start();
-$title = 'login';
+$title = 'events';
 $caption = '<h2>Sign in</h2>';
 $returnTop = false;
 $member = 1;
 $noBtns = true;
 
 if(isset($_SESSION["USERNAME"])){
-    header("Location: index.php");
+    header("Location: index.html");
     exit();
 }
 
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION["USERNAME"] = $name;
         $_SESSION["ID"] = $row["UserId"];
         $_SESSION['admin'] = $row['admin'];
-        header("Location: index.php");
+        header("Location: index.html");
         exit();
       }
 
