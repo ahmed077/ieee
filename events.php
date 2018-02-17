@@ -43,7 +43,7 @@ if ($action === 'all') { ?>
             <div class="container">
                 <div id="events-list" class="row">
     <?php foreach ($events as $event) {?>
-                <div class="col-xs-6 col-lg-3 workshop">
+                <div class="col-xs-6 col-lg-3 <?php echo $event['event_type'];?>">
                     <div class="events-item">
                         <div class="events-item-img">
                             <a href="events.php?r=event&id=<?php echo $event['id'];?>" style="background-image:url('<?php echo $event['image'];?>');">
@@ -68,6 +68,11 @@ if ($action === 'all') { ?>
                         <div class="events-item-link">
                             <a href="events.php?r=event&id=<?php echo $event['id'];?>" class="hvr-push">Read More</a>
                         </div>
+                        <hr>
+                        <div class="col-xs-12" style="padding-bottom:20px;display:flex;justify-content:space-around">
+                            <a class="deleteCheck" href="<?php echo $_SERVER['PHP_SELF']?>?r=delete&id=<?php echo $event['id'];?>"><div class="btn btn-danger"><i class="fa fa-remove"></i> Delete</div></a>
+                            <a href="<?php echo $_SERVER['PHP_SELF']?>?r=edit&id=<?php echo $event['id'];?>"><div class="btn btn-success"><i class="fa fa-edit"></i> Edit</div></a>
+                        </div>
                     </div>
                 </div>
             <?php } ?>
@@ -82,7 +87,6 @@ if ($action === 'all') { ?>
         $query = $con->prepare('SELECT * FROM events WHERE id=?');
         $query->execute(array($_GET['id']));
         if ($query->rowCount() > 0) {
-            echo "Event Does Exist";
             $event = $query->fetchAll(PDO::FETCH_ASSOC)[0];
             $speakersNames = explode(',', $event['speakers']);
             $speakersImages = explode(',', $event['speakers_images']);
@@ -118,6 +122,8 @@ if ($action === 'all') { ?>
 
                             <h4>More About this Event:</h4><br>
                             <p><?php echo $event['description'];?></p>
+                            <a href="event-attendee.php?id=<?php echo $_GET['id']; ?>"><div class="btn btn-info">Register Attendance</div></a>
+                            <a href="events.php?r=toggle&id=<?php echo $_GET['id']; ?>"><span class="btn btn-warning">Toggle Availability</span></a>
                         </div>
                         <div class="events-single-speakers col-md-4">
                             <h3>SPEAKERS</h3>
@@ -156,13 +162,14 @@ if ($action === 'all') { ?>
             $noBtns = true;
             if ($query->rowCount() > 0) {
                 $events = $query->fetchAll(PDO::FETCH_ASSOC);
+
                 ?>
                 <section class="events-list-single">
                     <div class="container">
                         <h2 class="related-heading"><span>See Other Events</span></h2>
                         <div class="row">
                             <?php foreach ($events as $event) {?>
-                                <div class="col-xs-6 col-lg-3 workshop">
+                                <div class="col-xs-6 col-lg-3 <?php echo $event['event_type'];?>">
                                     <div class="events-item">
                                         <div class="events-item-img">
                                             <a href="events.php?r=event&id=<?php echo $event['id'];?>">
@@ -187,6 +194,11 @@ if ($action === 'all') { ?>
                                         </div>
                                         <div class="events-item-link">
                                             <a href="events.php?r=event&id=<?php echo $event['id'];?>" class="hvr-push">Read More</a>
+                                        </div>
+                                        <hr>
+                                        <div class="col-xs-12" style="padding-bottom:20px;display:flex;justify-content:space-around">
+                                            <a class="deleteCheck" href="<?php echo $_SERVER['PHP_SELF']?>?r=delete&id=<?php echo $event['id'];?>"><div class="btn btn-danger"><i class="fa fa-remove"></i> Delete</div></a>
+                                            <a href="<?php echo $_SERVER['PHP_SELF']?>?r=edit&id=<?php echo $event['id'];?>"><div class="btn btn-success"><i class="fa fa-edit"></i> Edit</div></a>
                                         </div>
                                     </div>
                                 </div>
@@ -272,7 +284,7 @@ if ($action === 'all') { ?>
         $speakersArray = array();
         $speakers_imagesArray = array();
         $mission = filter_var($_POST['mission'], FILTER_SANITIZE_STRING);
-        $goals = filter_var($_POST['goals'], FILTER_SANITIZE_STRING);
+        $goals = filter_var(htmlspecialchars($_POST['goals']), FILTER_SANITIZE_STRING);
         $event_type = filter_var($_POST['event_type'], FILTER_SANITIZE_STRING);
         foreach ($_POST as $key => $value) {
             if (preg_match('/(speaker_name)/', $key)) {
@@ -304,6 +316,169 @@ if ($action === 'all') { ?>
         header("refresh:0;url=events.php");
         exit();
         } else {
+        header("refresh:0;url=events.php");
+        exit();
+    }
+    } elseif ($action === 'delete') {
+        $query = $con->prepare("DELETE FROM `events` WHERE `id` = ?");
+        $query->execute(array($_GET['id']));
+        header("refresh:0;url=events.php");
+        exit();
+    } elseif ($action === 'edit') {
+    if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+        $query=$con->prepare("SELECT * FROM `events` WHERE id = ?");
+        $query->execute(array($id));
+        if ($query->rowCount() > 0) {
+            $event = $query->fetchAll(PDO::FETCH_ASSOC)[0];
+            $speakersNames = explode(',', $event['speakers']);
+            $speakersImages = explode(',', $event['speakers_images']);
+            $speakers = [];
+            $i = 0;
+            foreach($speakersNames as $speaker) {
+                $speakers[] = [
+                    'name'  => $speaker,
+                    'image' => $speakersImages[$i]
+                ];
+                $i++;
+            }
+            $title='';
+            ?>
+    <section class="add-event-form">
+        <div class="container">
+            <form action="<?php echo $_SERVER['PHP_SELF'] . '?r=insert' ?>" id="event-form" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="<?php echo $id; ?>">
+                <div class="form-group">
+                    <label class="control-label">Event Name:</label>
+                    <input type="text" data-check="[^A-z0-9 ]" class="form-control"  id="event-name" placeholder="Event Title" name="name" value="<?php echo $event['title'];?>">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Event Date:</label>
+                    <input type="text" class="form-control" name="date" placeholder="MM/DD/YYYY"  value="<?php echo $event['date'];?>">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Event Location:</label>
+                    <input type="text" data-check="[^A-z0-9 ,\\-]" placeholder="Event Location" id="event-loc"  class="form-control" name="location"  value="<?php echo $event['location'];?>">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Speakers Names: <i id="addSpeaker"
+                                                                    class="fa fa-plus btn btn-success"></i></label>
+                    <div class="speakers">
+                        <?php
+                    if (count($speakers) > 0) {
+                        $i = 0;
+                        foreach ($speakers as $speaker) {
+                            $i++;
+                            ?>
+                        <input type="text" data-check="[^A-z ]" class="form-control" id="speaker-name"
+                               placeholder="Speaker's Name" name="speaker_name_<?php echo $i;?>" value="<?php echo $speaker['name']; ?>">
+                        <?php } ?>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Speakers Images:</label>
+                    <div class="speakers">
+                    <?php $i = 0;
+                        foreach ($speakers as $speaker) {
+                            $i++;
+                            ?>
+                        <input name="speaker_image_<?php echo $i;?>" type="file" onchange="ValidateSingleInput(this);">
+                        <?php } ?>
+                    </div>
+                </div>
+            <?php } else {
+                ?>
+                    <div class="speakers">
+                        <input type="text" data-check="[^A-z ]" class="form-control" id="speaker-name" placeholder="Speaker's Name" name="speaker_name_1" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Speakers Images:</label>
+                    <div class="speakers">
+                        <input name="speaker_image_1" type="file" onchange="ValidateSingleInput(this);">
+                    </div>
+                </div>
+                <?php } ?>
+                <div class="form-group">
+                    <label class="control-label">Event Mission:</label>
+                    <input type="text" class="form-control" data-check="[^A-z0-9 ,\\-\\(.)]" id="event-mission"  placeholder="Event Mission" name="mission" value="<?php echo $event['mission'];?>">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Event Goals:</label>
+                    <input type="text" class="form-control" id="event-goals" data-check="[^A-z0-9 ,\\-\\(.)]" placeholder="Event Goals" name="goals" value="<?php echo $event['goals'];?>">
+                </div>
+                <div class="form-group">
+                    <select class="form-control" name="event_type">
+                        <option <?php echo $event['event_type'] === 'workshop' ? 'selected' : null ;?> value="workshop">Workshops</option>
+                        <option <?php echo $event['event_type'] === 'visits' ? 'selected' : null ;?>value="visit">Visits</option>
+                        <option <?php echo $event['event_type'] === 'sessions' ? 'selected' : null ;?>value="session">Sessions</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Event Description:</label>
+                    <textarea name="description" class="form-control" cols="30" rows="10" data-check="[^\w ,\\-\\(.)]"> <?php echo $event['description'];?></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Upload Event Image:</label>
+                    <input name="event_image" type="file" onchange="ValidateSingleInput(this);">
+                </div>
+                <input type="submit" class="btn btn-success" id="submit" value="Submit">
+            </form>
+        </div>
+    </section>
+    <script src="js/event_validation.js"></script>
+    <?php
+        } else {
+            header("refresh:0;url=events.php");
+            exit();
+        }
+    } else {
+        header("refresh:0;url=events.php");
+        exit();
+    }
+        } elseif ($action === 'update') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        //TODO: Put Old Pictures
+        if (isset($_POST['id'])) {
+            $id = filter_var(intval($_POST['id']), FILTER_SANITIZE_NUMBER_INT);
+            $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
+            $date = filter_var($_POST['date'], FILTER_SANITIZE_STRING);
+            $image = 'images/events/' . sha1(substr($_FILES['event_image']['name'], 0, strlen($_FILES['event_image']['name']) - 5)) . substr($_FILES['event_image']['name'], strlen($_FILES['event_image']['name']) - 4);
+            $location = filter_var($_POST['location'], FILTER_SANITIZE_STRING);
+            $description = filter_var($_POST['description'], FILTER_SANITIZE_STRING);
+            $speakersArray = array();
+            $speakers_imagesArray = array();
+            $mission = filter_var($_POST['mission'], FILTER_SANITIZE_STRING);
+            $goals = filter_var(htmlspecialchars($_POST['goals']), FILTER_SANITIZE_STRING);
+            $event_type = filter_var($_POST['event_type'], FILTER_SANITIZE_STRING);
+            foreach ($_POST as $key => $value) {
+                if (preg_match('/(speaker_name)/', $key)) {
+                    $speakersArray[] = $value;
+                }
+            }
+            $speakersArray = filter_var_array($speakersArray, FILTER_SANITIZE_STRING);
+            $speakers = implode(',', $speakersArray);
+            foreach ($_FILES as $key => $value) {
+                if (preg_match('/(speaker_image)/', $key)) {
+                    if (strlen($_FILES[$key]['name']) > 0) {
+                        $speakerImgName = 'images/speakers/' . sha1(substr($_FILES[$key]['name'], 0, strlen($_FILES[$key]['name']) - 5)) . '_' . $key . substr($_FILES[$key]['name'], strlen($_FILES[$key]['name']) - 4);
+                        move_uploaded_file($_FILES[$key]['tmp_name'], __DIR__ . $speakerImgName);
+                    } else {
+                        $speakerImgName = 'images/speakers/person-vector.jpg';
+                    }
+                    $speakers_imagesArray[] = $speakerImgName;
+                }
+            }
+            $speakers_imagesArray = filter_var_array($speakers_imagesArray, FILTER_SANITIZE_STRING);
+            $speakers_images = implode(',', $speakers_imagesArray);
+            move_uploaded_file($_FILES['event_image']['tmp_name'], $image);
+            $query = $con->prepare("UPDATE `events` SET `title`=?,`image`=?,`date`=?,`location`=?,`description`=?,`speakers`=?,`speakers_images`=?, `mission`=?, `goals`=?, `event_type`=? WHERE id=?");
+            $query->execute(array($name, $image, $date, $location, $description, $speakers, $speakers_images, $mission, $goals, $event_type, $id));
+        }
+        header("refresh:0;url=events.php");
+        exit();
+    } else {
         header("refresh:0;url=events.php");
         exit();
     }

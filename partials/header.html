@@ -38,7 +38,7 @@
     <div class="row">
         <div class="site-branding col-sm-3 col-md-3">
             <h1 class="site-title">
-                <a href="index.html" title="IEEE PUA SB" rel="home">
+                <a href="index.php" title="IEEE PUA SB" rel="home">
                     <img src="images/ieee-logo.png" alt="IEEEPUAsb_logo" title="IEEE PUA SB">
                 </a>
             </h1>
@@ -54,7 +54,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="register.html" style="font-size: 18px" title="Register"><i class="fa fa-user-plus" aria-hidden="true"></i>
+                                <a href="register.php" style="font-size: 18px" title="Register"><i class="fa fa-user-plus" aria-hidden="true"></i>
                                 </a>
                             </li>
                         </ul>
@@ -90,7 +90,30 @@
         </div>
     </div>
 </header>
-<section class="<?php echo ($title === 'home') ? 'hero-3' : ($title === 'volunteers') ? 'news-hero' : $title . '-hero';?>">
+<?php
+$titles = ['home','events','events-single','news','news-single','contact','gallery','page-not-found','schedule','sign-in','sign-up','404', 'volunteers', 'contact-login contact'];
+$title=strtolower($title);
+if (!in_array($title, $titles)) {
+    $headerClass = 'default-hero';
+} else {
+    if ($title ==='home') {
+        $headerClass = 'hero-3';
+    } elseif ($title === 'volunteers') {
+        $headerClass = 'news-hero';
+    } else {
+        $headerClass = $title . '-hero';
+    }
+}
+?>
+<section class="<?php echo $headerClass?>" id="header-section">
+    <script>
+        document.body.onload = function () {
+            if ($('body').height() < $(window).height()) {
+                var nxt = $('#header-section').next().eq(0);
+                nxt.height(nxt.height() + $(window).height() - $('body').height());
+            }
+        };
+    </script>
     <div class="container">
         <div class="row">
             <div class="hero-content">
