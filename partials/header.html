@@ -79,7 +79,13 @@
                         <li class="<?php if ($title === 'gallery') {echo 'active';} ?>"><a href="gallery.html">gallery</a></li>
                         <li class="<?php if ($title === 'committees') {echo 'active';} ?>"><a href="committee.html">Committees</a></li>
                         <li class="<?php if ($title === 'contact') {echo 'active';} ?>"><a href="contact.html">Contact</a></li>
-
+                        <?php if(isset($_SESSION['name'])){ ?>
+                        <li class="alert alert-danger"><?php echo ucfirst($_SESSION['name']); ?></li>
+                        <li><a href="logout.php">Logout</a></li>
+                        <?php } else {?>
+                        <!-- Login/Register Links -->
+                        <li><a href="login.php">Login</a></li>
+                        <?php }?>
                     </ul>
                     <!--<ul class="nav navbar-nav navbar-right">
 <li><a href="sign-in.html" title="Sign In"><i class="fa fa-user-o fa-lg" aria-hidden="true"></i></a></li>
@@ -91,13 +97,15 @@
     </div>
 </header>
 <?php
-$titles = ['home','events','events-single','news','news-single','contact','gallery','page-not-found','schedule','sign-in','sign-up','404', 'volunteers', 'contact-login contact'];
+$titles = ['home','events','events-single','news','news-single','contact','gallery','page-not-found','schedule','login','sign-up','404', 'volunteers', 'contact-login contact'];
 $title=strtolower($title);
 if (!in_array($title, $titles)) {
     $headerClass = 'default-hero';
 } else {
     if ($title ==='home') {
         $headerClass = 'hero-3';
+    } elseif ($title === 'login') {
+        $headerClass = 'contact-hero';
     } elseif ($title === 'volunteers') {
         $headerClass = 'news-hero';
     } else {

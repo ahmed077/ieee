@@ -1,12 +1,13 @@
 <?php
 ob_start();
+session_start();
 $title = 'events';
 $caption = '<h2>Our Events</h2>';
 $returnTop = false;
-$member = 1;
 $action = isset($_GET['r']) ? $_GET['r'] : 'all';
 $noBtns = false;
-if ($action === 'add' && $member === 1) {
+$_SESSION['admin'] = isset($_SESSION['admin']) ? $_SESSION['admin'] : 0 ;
+if ($action === 'add' && isset($_SESSION) && $_SESSION['admin'] === 1) {
     $caption = '<h2>Add Event</h2>';
 }
 require_once 'includes/init.php';
@@ -26,11 +27,13 @@ if ($action === 'all') { ?>
                     </div>
                 </div>
             </div>
+    <?php if (isset($_SESSION) && in_array($_SESSION['admin'],[1,2])) { ?>
             <div class="row add-event">
                 <a href="events.php?r=add" id="addS">
                     <div class="btn btn-lg btn-success"><i class="fa fa-plus"></i> Add Event</div>
                 </a>
             </div>
+        <?php } ?>
         </div>
     </section>
     <?php
@@ -68,6 +71,7 @@ if ($action === 'all') { ?>
                         <div class="events-item-link">
                             <a href="events.php?r=event&id=<?php echo $event['id'];?>" class="hvr-push">Read More</a>
                         </div>
+            <?php if (isset($_SESSION) && $_SESSION['admin'] === 1) { ?>
                         <hr>
                         <div class="col-xs-12" style="padding-bottom:20px;display:flex;justify-content:space-around">
                             <a class="deleteCheck" href="<?php echo $_SERVER['PHP_SELF']?>?r=delete&id=<?php echo $event['id'];?>"><div class="btn btn-danger"><i class="fa fa-remove"></i> Delete</div></a>
@@ -76,10 +80,22 @@ if ($action === 'all') { ?>
                     </div>
                 </div>
             <?php } ?>
+            <?php } ?>
             </div>
         </div>
     </section>
-<?php } else {
+        <?php if (isset($_SESSION) && $_SESSION['admin'] === 1) { ?>
+        <div class="alert-box hidden">
+            <div class="alert alert-danger h1">
+                Are you Sure You Want to Delete this Event?
+            </div>
+            <div class="btns" style="display:flex;justify-content: space-around;align-items: center;">
+                <div data-val="1" class="btn btn-danger btn-lg confirmDelete">Yes</div>
+                <div data-val="0" class="btn btn-info btn-lg cancelDelete" style="margin-left:20px;">No</div>
+            </div>
+        </div>
+<?php }
+        } else {
         echo '<section class="events-list text-center">No Events Added</section>';
     }
 } elseif ($action === 'event') {
@@ -122,8 +138,21 @@ if ($action === 'all') { ?>
 
                             <h4>More About this Event:</h4><br>
                             <p><?php echo $event['description'];?></p>
+                            <?php
+                                if ($event['event_open'] === 1) {
+                                    $open = true;
+                                ?>
                             <a href="event-attendee.php?id=<?php echo $_GET['id']; ?>"><div class="btn btn-info">Register Attendance</div></a>
-                            <a href="events.php?r=toggle&id=<?php echo $_GET['id']; ?>"><span class="btn btn-warning">Toggle Availability</span></a>
+                            <?php
+                                } else {
+                                    $open = false;
+                                }
+                                if (isset($_SESSION) && $_SESSION['admin'] === 1) {
+                                    ?>
+                            <a href="events.php?r=toggle&id=<?php echo $_GET['id']; ?>">
+                                <span class="btn btn-warning"><?php echo $open?'Close Registeration':'Open Registeration';?></span>
+                            </a>
+                            <?php } ?>
                         </div>
                         <div class="events-single-speakers col-md-4">
                             <h3>SPEAKERS</h3>
@@ -206,6 +235,15 @@ if ($action === 'all') { ?>
                         </div>
                     </div>
                 </section>
+                <div class="alert-box hidden">
+                    <div class="alert alert-danger h1">
+                        Are you Sure You Want to Delete this Event?
+                    </div>
+                    <div class="btns" style="display:flex;justify-content: space-around;align-items: center;">
+                        <div data-val="1" class="btn btn-danger btn-lg confirmDelete">Yes</div>
+                        <div data-val="0" class="btn btn-info btn-lg cancelDelete" style="margin-left:20px;">No</div>
+                    </div>
+                </div>
             <?php } else {
                 echo '<section class="events-list text-center">No Other Events</section>';
             }
@@ -215,7 +253,7 @@ if ($action === 'all') { ?>
     } else {
         echo "Event's ID Does Not Exist";
     }
-} elseif ($action === 'add' && $member === 1) {
+} elseif ($action === 'add' && $_SESSION['admin'] === 1) {
     $noBtns = true;
     ?>
     <section class="add-event-form">
@@ -304,8 +342,6 @@ if ($action === 'all') { ?>
                 $speakers_imagesArray[] = $speakerImgName;
             }
         }
-        echo '<pre>'; print_r($_POST);echo '</pre>';
-        echo '<pre>'; print_r($_FILES);echo '</pre>';
         $speakers_imagesArray = filter_var_array($speakers_imagesArray, FILTER_SANITIZE_STRING);
         $speakers_images = implode(',', $speakers_imagesArray);
         move_uploaded_file($_FILES['event_image']['tmp_name'], $image);
@@ -313,8 +349,11 @@ if ($action === 'all') { ?>
                                     (`title`,`image`,`date`,`location`,`description`,`speakers`,`speakers_images`,`mission`,`goals`,`event_type`) 
                                     VALUES (?,?,?,?,?,?,?,?,?,?)");
         $query->execute(array($name, $image, $date, $location, $description, $speakers, $speakers_images, $mission, $goals, $event_type));
-        header("refresh:0;url=events.php");
-        exit();
+        $title='';
+        ?>
+        <div class="alert alert-success text-center others-section" style="font-size:30px">Adding Your Event</div>
+        <?php
+        header("refresh:1;url=events.php");
         } else {
         header("refresh:0;url=events.php");
         exit();
@@ -346,7 +385,7 @@ if ($action === 'all') { ?>
             ?>
     <section class="add-event-form">
         <div class="container">
-            <form action="<?php echo $_SERVER['PHP_SELF'] . '?r=insert' ?>" id="event-form" method="post" enctype="multipart/form-data">
+            <form action="<?php echo $_SERVER['PHP_SELF'] . '?r=update' ?>" id="event-form" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo $id; ?>">
                 <div class="form-group">
                     <label class="control-label">Event Name:</label>
@@ -423,10 +462,19 @@ if ($action === 'all') { ?>
                     <label class="control-label">Upload Event Image:</label>
                     <input name="event_image" type="file" onchange="ValidateSingleInput(this);">
                 </div>
-                <input type="submit" class="btn btn-success" id="submit" value="Submit">
+                <input type="submit" class="btn btn-success editCheck" id="submit" value="Submit">
             </form>
         </div>
     </section>
+            <div class="alert-box hidden">
+                <div class="alert alert-danger h1">
+                    Are you Sure You Want to Edit this Event?
+                </div>
+                <div class="btns" style="display:flex;justify-content: space-around;align-items: center;">
+                    <div data-val="1" class="btn btn-danger btn-lg confirmDelete">Yes</div>
+                    <div data-val="0" class="btn btn-info btn-lg cancelDelete" style="margin-left:20px;">No</div>
+                </div>
+            </div>
     <script src="js/event_validation.js"></script>
     <?php
         } else {

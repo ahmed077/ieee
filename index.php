@@ -1,10 +1,27 @@
 <?php
 ob_start();
+session_start();
 $title = 'home';
 $returnTop = false;
 $caption = '<h2>Welcome to <span>IEEE PUA SB</span></h2><p>Welcome to the world\'s largest professional organization dedicated to advancing technological innovation and excellence for the benefit of humanity.</p>';
 require_once 'includes/init.php';
+$subscribe = false;
+$query = $con->prepare("SELECT id FROM events WHERE event_open = 1");
+$query->execute();
+if ($query->rowCount() > 0) {
+    $subscribe = true;
 ?>
+    <div class="events-item-link">
+        <?php
+        if ($query->rowCount() === 1) {
+            $event = $query->fetchAll(PDO::FETCH_ASSOC)[0];
+            ?>
+            <a href="event-attendee.php?id==<?php echo $event['id'];?>" class="hvr-push">Subscribe to <?php echo ucfirst($event['title']); ?></a>
+        <?php } else { ?>
+            <a href="event-attendee.php" class="hvr-push">View Available Events</a>
+        <?php } ?>
+    </div>
+    <?php } ?>
     <section class="featured-box white-bg">
 
         <div class="row">
@@ -124,7 +141,7 @@ if ($query->rowCount() > 0) {
         </div>
     </section>
 <?php } else {
-    echo '<section class="events-list text-center">No Other Events</section>';
+    echo '<section class="events-list text-center h1">No Events Added</section>';
 } ?>
 
     <section class="featured-gallery">

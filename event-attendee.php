@@ -1,6 +1,10 @@
 <?php
 ob_start();
+session_start();
+$title = 'Register Attendance';
 $returnTop = false;
+$caption = '';
+require_once 'includes/init.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title="Event Subscribtion";
     $caption="";
@@ -16,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $query = $con->prepare("INSERT INTO `attendees` (`name`,`faculty`, `semester`, `email`, `facebook_profile`, `mobile`, `membership_type`, `event_id`) VALUES (?,?,?,?,?,?,?,?)");
     $query->execute(array($name, $faculty, $semester, $email, $facebook, $mobile, $membership, $id));
     if ($query->rowCount() > 0) { ?>
-        <div class="text-success text-center" style="margin: 10px 0;display: flex;flex-direction: column;justify-content: center;"><i class="fa-5x fa fa-check-circle-o"></i>
+        <div class="text-success text-center others-section"><i class="fa-5x fa fa-check-circle-o"></i>
             <p class="lead">Success</p></div>
     <?php
     } else { ?>
@@ -173,14 +177,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <script src="js/events-form.js"></script>
     <?php
     } else {
-        header("refresh:0;url=events.php");
+        header("refresh:0;url=event-attendee.php");
         exit();
     } ?>
 
-<?php } else {
-        header("refresh:0;url=events.php");
-        exit();
-    }
+<?php
+    } else {
+    $query = $con->prepare("SELECT * FROM events WHERE event_open = 1");
+    $query->execute();
+    if ($query->rowCount() > 0) {
+    $events = $query->fetchAll(PDO::FETCH_ASSOC);
+        ?>
+        <section class="events-list">
+            <div class="container">
+                <div id="events-list" class="row">
+                    <?php foreach ($events as $event) {?>
+                        <div class="col-xs-6 col-lg-3 <?php echo $event['event_type'];?>">
+                            <div class="events-item">
+                                <div class="events-item-img">
+                                    <a href="events.php?r=event&id=<?php echo $event['id'];?>" style="background-image:url('<?php echo $event['image'];?>');">
+                                    </a>
+                                </div>
+                                <div class="events-item-info">
+                                    <h3><a href="events.php?r=event&id=<?php echo $event['id'];?>">
+                                            <?php echo $event['title'];?>
+                                        </a></h3><br><br>
+                                    <ul class="event-meta">
+                                        <li>
+                                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                                            <?php echo $event['date'];?>
+                                        </li>
+                                        <li>
+                                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                            <?php echo $event['location'];?>
+                                        </li>
+                                    </ul>
+                                    <p><?php echo substr($event['description'], 0, 60);?>...</p>
+                                </div>
+                                <div class="events-item-link">
+                                    <a href="events.php?r=event&id=<?php echo $event['id'];?>" class="hvr-push">Read More</a>
+                                </div>
+                                <hr>
+                                <div class="col-xs-12" style="padding-bottom:20px;display:flex;justify-content:space-around">
+                                    <a class="deleteCheck" href="<?php echo $_SERVER['PHP_SELF']?>?r=delete&id=<?php echo $event['id'];?>"><div class="btn btn-danger"><i class="fa fa-remove"></i> Delete</div></a>
+                                    <a href="<?php echo $_SERVER['PHP_SELF']?>?r=edit&id=<?php echo $event['id'];?>"><div class="btn btn-success"><i class="fa fa-edit"></i> Edit</div></a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
+        </section>
+     <?php } else { ?>
+            <section class="events-list text-center h1">No Events Available</section>
+    <?php }
+        }
     }
 require_once 'partials/footer.html';
 ob_end_flush();

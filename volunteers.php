@@ -4,27 +4,27 @@ session_start();
 $title = 'volunteers';
 $caption = '<h2>Volunteers</h2>';
 $returnTop = false;
-$member = 1;
 $action = isset($_GET['r']) ? $_GET['r'] : 'all';
 $noBtns = false;
-if ($action === 'add' && $member === 1) {
+if ($action === 'add' && isset($_SESSION['admin']) && $_SESSION['admin'] === 1) {
     $caption = '<h2>Add Volunter</h2>';
 }
 require_once 'includes/init.php';
+print_r($_SESSION);
 
 
 if ($action === 'all') { 
 //    $noBtns = true;
     $query = $con->prepare('SELECT * FROM volunteers');
     $query->execute();
-    $events = $query->fetchAll(PDO::FETCH_ASSOC);
+    $volunteers = $query->fetchAll(PDO::FETCH_ASSOC);
     
 ?>
 <section class="volunteersSection">
     <div class="container">
         <div class="rowvolunteer">
             <hr class="hrVolunteer">
-            <?php if(isset($_SESSION['admin']) && $_SESSION['admin'] = 1){ ?>
+            <?php if(isset($_SESSION['admin']) && $_SESSION['admin'] === 1){ ?>
 
             <div class="row add-event">
                 <a href="volunteers.php?r=add" id="addS">
@@ -34,22 +34,22 @@ if ($action === 'all') {
 
             <?php } ?>
 
-            <?php  foreach ($events as $event ) { ?>
+            <?php  foreach ($volunteers as $volunteer ) { ?>
            
             
             <div class="col-xs-6 col-md-3 col-lg-3 volunteers">
-                <img class="imageOfVolunteer" src="<?php echo $event['Img'] ?>" alt="" title="Abdallah Zaitton">
-                <h2> <?php echo $event['Name'] ?> </h2> <!-- to print the name  -->
-                <p>Volunteer in <?php echo $event['Committee'] ?> Committee</p> 
+                <img class="imageOfVolunteer" src="<?php echo $volunteer['Img'] ?>" alt="" title="Abdallah Zaitton">
+                <h2> <?php echo $volunteer['Name'] ?> </h2> <!-- to print the name  -->
+                <p>Volunteer in <?php echo $volunteer['Committee'] ?> Committee</p> 
 
                 <div class="socialOfVol" style="margin-right: 0">
                     <div class="facebook">
-                        <a href="<?php echo $event['Facebook'] ?>" target="_blank">
+                        <a href="<?php echo $volunteer['Facebook'] ?>" target="_blank">
                             <i class="fa fa-facebook" aria-hidden="true"></i>
                         </a>
                     </div>
                     <div class="linkedin">
-                        <a href="<?php echo $event['Linkedin'] ?>" target="_blank">
+                        <a href="<?php echo $volunteer['Linkedin'] ?>" target="_blank">
                             <i class="fa fa-linkedin-square" aria-hidden="true"></i>
                         </a>
                     </div>
@@ -67,9 +67,9 @@ if ($action === 'all') {
 
 <?php
 }  
-elseif ($action === 'add'){
-//elseif ($action === 'add' && isset($_SESSION['admin']) && $_SESSION['admin'] = 1){
-//    $noBtns = true;
+//elseif ($action === 'add'){
+elseif ($action === 'add' && isset($_SESSION['admin']) && $_SESSION['admin'] = 1){
+    $noBtns = true;
     ?>
     <section class="add-event-form">
         <div class="container">
