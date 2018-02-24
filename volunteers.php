@@ -51,9 +51,15 @@ if ($action === 'all') {
                         </a>
                     </div>
                 </div>
+                <?php if(isset($_SESSION['admin']) && $_SESSION['admin'] === 1){ ?>
+                    <a class="deleteCheck" href="<?php echo $_SERVER['PHP_SELF'];?>?r=delete&id=<?php echo $volunteer['id'];?>">
+                        <div class="btn btn-danger">Delete</div>
+                    </a>
+                <?php } ?>
             </div>
 
             <?php } ?>
+
 
             <div class="clearfix"></div>
             <hr class="hrVolunteer1">
@@ -63,40 +69,43 @@ if ($action === 'all') {
 
 
 <?php
-}  
-//elseif ($action === 'add'){
-elseif ($action === 'add' && isset($_SESSION['admin']) && $_SESSION['admin'] = 1){
+} elseif ($action === 'add' && isset($_SESSION['admin']) && $_SESSION['admin'] = 1) {
     $noBtns = true;
     ?>
     <section class="add-event-form">
         <div class="container">
-            <form action="<?php echo $_SERVER['PHP_SELF'] . '?r=insert' ?>" id="event-form" method="post" enctype="multipart/form-data">
+            <form action="<?php echo $_SERVER['PHP_SELF'] . '?r=insert' ?>" id="event-form" method="post"
+                  enctype="multipart/form-data">
 
                 <div class="form-group">
                     <label class="control-label">Volunteer Name:</label>
-                    <input type="text" data-check="[^A-z0-9 ]" class="form-control"   placeholder="Volunteer Name" name="name">
+                    <input type="text" data-check="[^A-z0-9 ]" class="form-control" placeholder="Volunteer Name"
+                           name="name">
                 </div>
 
                 <div class="form-group">
                     <label class="control-label">Committee :</label>
-                    <input type="text" data-check="[^A-z0-9 ,\\-]" placeholder="Volunteer Committee"   class="form-control" name="committee">
+                    <input type="text" data-check="[^A-z0-9 ,\\-]" placeholder="Volunteer Committee"
+                           class="form-control" name="committee">
                 </div>
 
                 <div class="form-group">
                     <label class="control-label">Image :</label>
-<!--                    <label class="control-label">img :</label>-->
-                    <input type="file" class="form-control" name="img" >
-<!--                    <input type="text" placeholder="Volunteer img"   class="form-control" name="img" required>-->
+                    <!--                    <label class="control-label">img :</label>-->
+                    <input type="file" class="form-control" name="img">
+                    <!--                    <input type="text" placeholder="Volunteer img"   class="form-control" name="img" required>-->
                 </div>
 
                 <div class="form-group">
                     <label class="control-label">Facebook URL :</label>
-                    <input type="text" class="form-control" data-check="[^A-z0-9 ,\\-\\(.)]" placeholder="Facebook URL" name="facebook">
+                    <input type="text" class="form-control" data-check="[^A-z0-9 ,\\-\\(.)]" placeholder="Facebook URL"
+                           name="facebook">
                 </div>
 
                 <div class="form-group">
                     <label class="control-label">Linkedin URL :</label>
-                    <input type="text" class="form-control" data-check="[^A-z0-9 ,\\-\\(.)]" placeholder="Linkedin URL" name="linkedin">
+                    <input type="text" class="form-control" data-check="[^A-z0-9 ,\\-\\(.)]" placeholder="Linkedin URL"
+                           name="linkedin">
                 </div>
 
                 <input type="submit" class="btn btn-success" id="submit" value="Submit">
@@ -104,11 +113,16 @@ elseif ($action === 'add' && isset($_SESSION['admin']) && $_SESSION['admin'] = 1
 
         </div>
     </section>
-    
-<?php } 
 
-
-elseif ($action === 'insert') {
+    <?php
+} elseif ($action ==='delete') {
+    if (isset($_GET['id'])) {
+        $query = $con->prepare("DELETE FROM volunteers WHERE id = ?");
+        $query->execute(array($_GET['id']));
+    }
+    header("Location: volunteers.php");
+    exit();
+} elseif ($action === 'insert') {
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo $_POST['name']."<br/>";

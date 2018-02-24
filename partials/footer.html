@@ -82,9 +82,13 @@
 <script src="js/featherlight.min.js"></script>
 <script src="js/bootstrap.offcanvas.min.js"></script>
 <?php if (isset($noBtns) && $noBtns) {?>
-<?php } else {?>
+<?php
+    } else {
+    $titles = ['committees','courses','events','home'];
+    if (in_array($title,$titles)) {
+?>
 <script src="js/<?php echo strtolower($title);?>.js"></script>
-<?php }?>
+<?php } } ?>
 <script src="js/maincustom.js"></script>
 </body>
 </html>

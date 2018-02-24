@@ -139,7 +139,7 @@ if ($action === 'all') { ?>
                             <h4>More About this Event:</h4><br>
                             <p><?php echo $event['description'];?></p>
                             <?php
-                                if ($event['event_open'] === 1) {
+                                if (intval($event['event_open']) === 1) {
                                     $open = true;
                                 ?>
                             <a href="event-attendee.php?id=<?php echo $_GET['id']; ?>"><div class="btn btn-info">Register Attendance</div></a>
@@ -253,6 +253,16 @@ if ($action === 'all') { ?>
     } else {
         echo "Event's ID Does Not Exist";
     }
+} elseif ($action === 'toggle' && $_SESSION['admin'] === 1) {
+    $query=$con->prepare("SELECT event_open FROM events WHERE id = ?");
+    $query->execute(array($_GET['id']));
+    if ($query->rowCount() > 0) {
+        $next = intval($query->fetchAll()[0]['event_open']) === 0 ? 1 : 0;
+        $query2 = $con->prepare("UPDATE events SET event_open=? WHERE id =?");
+        $query2->execute(array($next,$_GET['id']));
+    }
+    header("Location:". $_SERVER['HTTP_REFERER']);
+    exit();
 } elseif ($action === 'add' && $_SESSION['admin'] === 1) {
     $noBtns = true;
     ?>
@@ -385,7 +395,7 @@ if ($action === 'all') { ?>
             ?>
     <section class="add-event-form">
         <div class="container">
-            <form action="<?php echo $_SERVER['PHP_SELF'] . '?r=update' ?>" id="event-form" method="post" enctype="multipart/form-data">
+            <form action="<?php echo $_SERVER['PHP_SELF'] . '?r=update' ?>" id="edit-event-form" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo $id; ?>">
                 <div class="form-group">
                     <label class="control-label">Event Name:</label>
