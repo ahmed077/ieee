@@ -24,12 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($count > 0) {
 
         $_SESSION["name"] = $row['name'];
-        $_SESSION["ID"] = $row["id"];
-        $_SESSION['admin'] = $row['admin'];
+        $_SESSION["ID"] = intval($row["id"]);
+        $_SESSION['admin'] = intval($row['admin']);
         header("Location: index.php");
         exit();
 //        print_r($_SESSION);
 //        print_r($row);
+//        echo var_dump($_SESSION['admin']);
     } else {
         $error = true;
     }

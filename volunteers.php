@@ -10,11 +10,8 @@ if ($action === 'add' && isset($_SESSION['admin']) && $_SESSION['admin'] === 1) 
     $caption = '<h2>Add Volunter</h2>';
 }
 require_once 'includes/init.php';
-print_r($_SESSION);
 
-
-if ($action === 'all') { 
-//    $noBtns = true;
+if ($action === 'all') {
     $query = $con->prepare('SELECT * FROM volunteers');
     $query->execute();
     $volunteers = $query->fetchAll(PDO::FETCH_ASSOC);
