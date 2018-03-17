@@ -52,7 +52,7 @@ if ($action === 'all') {
                     </div>
                 </div>
                 <?php if(isset($_SESSION['admin']) && $_SESSION['admin'] === 1){ ?>
-                    <a class="deleteCheck" href="<?php echo $_SERVER['PHP_SELF'];?>?r=delete&id=<?php echo $volunteer['id'];?>">
+                    <a class="deleteCheck" href="<?php echo $_SERVER['PHP_SELF'];?>?r=delete&id=<?php echo $volunteer['ID'];?>">
                         <div class="btn btn-danger">Delete</div>
                     </a>
                 <?php } ?>
@@ -66,9 +66,17 @@ if ($action === 'all') {
         </div>
     </div>
 </section>
-
-
-<?php
+    <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] === 1) { ?>
+        <div class="alert-box hidden">
+            <div class="alert alert-danger h1">
+                Are you Sure You Want to Delete this Volunteer?
+            </div>
+            <div class="btns" style="display:flex;justify-content: space-around;align-items: center;">
+                <div data-val="1" class="btn btn-danger btn-lg confirmDelete">Yes</div>
+                <div data-val="0" class="btn btn-info btn-lg cancelDelete" style="margin-left:20px;">No</div>
+            </div>
+        </div>
+    <?php }
 } elseif ($action === 'add' && isset($_SESSION['admin']) && $_SESSION['admin'] = 1) {
     $noBtns = true;
     ?>

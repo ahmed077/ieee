@@ -1,0 +1,30 @@
+.events-single-about{
+    background-image: url(../images/brainy.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right;
+}
+
+.events-single-Registeration input{
+    margin-top: 10px;
+}
+.sel{
+    width:47%;
+    float:left;
+    margin-bottom: 15px;
+}
+.sel2{
+    width:47%;
+    margin-left:6%;
+    float:left;
+    margin-bottom: 15px;
+}
+.sel3{
+    margin-bottom: 15px;
+}
+.date{
+    margin:0 !important;
+}
+.datepick{
+    margin-bottom: 10px;
+}

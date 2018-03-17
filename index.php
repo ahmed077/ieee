@@ -5,8 +5,9 @@ $title = 'home';
 $returnTop = false;
 $caption = '<h2>Welcome to <span>IEEE PUA SB</span></h2><p>Welcome to the world\'s largest professional organization dedicated to advancing technological innovation and excellence for the benefit of humanity.</p>';
 require_once 'includes/init.php';
+/*
 $subscribe = false;
-$query = $con->prepare("SELECT id FROM events WHERE event_open = 1");
+$query = $con->prepare("SELECT * FROM events WHERE event_open = 1");
 $query->execute();
 if ($query->rowCount() > 0) {
     $subscribe = true;
@@ -21,13 +22,13 @@ if ($query->rowCount() > 0) {
             <a href="event-attendee.php" class="hvr-push">View Available Events</a>
         <?php } ?>
     </div>
-    <?php } ?>
+    <?php }*/ ?>
     <section class="featured-box white-bg">
 
         <div class="row">
             <div class="col-sm-4 col-md-4">
                 <div class="box-1">
-                    <a href="volunteers.html">
+                    <a href="volunteers.php">
                         Volunteers <!-- <span>Events</span> -->
                     </a>
                 </div>
@@ -49,7 +50,10 @@ if ($query->rowCount() > 0) {
         </div>
 
     </section>
-
+    <section class="megaEvent">
+        <img src="images/poster.jpg" alt="Mega Event">
+        <a href="MBB.php" class="btn btn-success btn-lg col-xs-12 megaBtn">Read More &amp; Register</a>
+    </section>
     <section class="we-have-faith">
         <div class="section-header col-sm-6 pull-left">
             <h3 class="icon"><img src="images/mission-icon.png" alt="Mission Icon" title="Mission Icon" height="100" width="100"></h3>
@@ -100,6 +104,7 @@ if ($query->rowCount() > 0) {
 <?php
 $query = $con->prepare('SELECT * FROM events ORDER BY DATE DESC LIMIT 4');
 $query->execute();
+print_r($_SESSION);
 if ($query->rowCount() > 0) {
     $events = $query->fetchAll(PDO::FETCH_ASSOC);
     ?>
@@ -129,7 +134,7 @@ if ($query->rowCount() > 0) {
                                         <?php echo $event['location'];?>
                                     </li>
                                 </ul>
-                                <p><?php echo substr($event['description'], 0, 60);?>...</p>
+                                <p><?php echo substr(decode($event['description']), 0, 60);?>...</p>
                             </div>
                             <div class="events-item-link">
                                 <a href="events.php?r=event&id=<?php echo $event['id'];?>" class="hvr-push">Read More</a>

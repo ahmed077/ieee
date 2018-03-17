@@ -10,8 +10,13 @@ $_SESSION['admin'] = isset($_SESSION['admin']) ? $_SESSION['admin'] : 0 ;
 if ($action === 'add' && isset($_SESSION) && $_SESSION['admin'] === 1) {
     $caption = '<h2>Add Event</h2>';
 }
-require_once 'includes/init.php';
-if ($action === 'all') { ?>
+require_once 'includes/connect.php';
+require_once 'includes/functions.php';
+if ($action === 'all') {
+    $title = 'events';
+    $caption = '<h2>Our Events</h2>';
+    require_once 'partials/header.html';
+    ?>
     <section class="events-search-filter">
         <div class="container">
             <div class="row">
@@ -27,7 +32,7 @@ if ($action === 'all') { ?>
                     </div>
                 </div>
             </div>
-    <?php if (isset($_SESSION) && in_array($_SESSION['admin'],[1,2])) { ?>
+    <?php if (isset($_SESSION['admin']) && in_array($_SESSION['admin'],[1,2])) {?>
             <div class="row add-event">
                 <a href="events.php?r=add" id="addS">
                     <div class="btn btn-lg btn-success"><i class="fa fa-plus"></i> Add Event</div>
@@ -45,61 +50,69 @@ if ($action === 'all') { ?>
         <section class="events-list">
             <div class="container">
                 <div id="events-list" class="row">
-    <?php foreach ($events as $event) {?>
-                <div class="col-xs-6 col-lg-3 <?php echo $event['event_type'];?>">
-                    <div class="events-item">
-                        <div class="events-item-img">
-                            <a href="events.php?r=event&id=<?php echo $event['id'];?>" style="background-image:url('<?php echo $event['image'];?>');">
-                            </a>
-                        </div>
-                        <div class="events-item-info">
-                            <h3><a href="events.php?r=event&id=<?php echo $event['id'];?>">
-                                    <?php echo $event['title'];?>
-                                </a></h3><br><br>
-                            <ul class="event-meta">
-                                <li>
-                                    <i class="fa fa-calendar" aria-hidden="true"></i>
-                                    <?php echo $event['date'];?>
-                                </li>
-                                <li>
-                                    <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                    <?php echo $event['location'];?>
-                                </li>
-                            </ul>
-                            <p><?php echo substr($event['description'], 0, 60);?>...</p>
-                        </div>
-                        <div class="events-item-link">
-                            <a href="events.php?r=event&id=<?php echo $event['id'];?>" class="hvr-push">Read More</a>
-                        </div>
-            <?php if (isset($_SESSION) && $_SESSION['admin'] === 1) { ?>
-                        <hr>
-                        <div class="col-xs-12" style="padding-bottom:20px;display:flex;justify-content:space-around">
-                            <a class="deleteCheck" href="<?php echo $_SERVER['PHP_SELF']?>?r=delete&id=<?php echo $event['id'];?>"><div class="btn btn-danger"><i class="fa fa-remove"></i> Delete</div></a>
-                            <a href="<?php echo $_SERVER['PHP_SELF']?>?r=edit&id=<?php echo $event['id'];?>"><div class="btn btn-success"><i class="fa fa-edit"></i> Edit</div></a>
-                        </div>
+    <?php foreach ($events as $event) { ?>
+        <div class="col-xs-6 col-lg-3 <?php echo $event['event_type']; ?>">
+            <div class="events-item">
+                <div class="events-item-img">
+                    <a href="events.php?r=event&id=<?php echo $event['id']; ?>"
+                       style="background-image:url('<?php echo $event['image']; ?>');">
+                    </a>
+                </div>
+                <div class="events-item-info">
+                    <h3><a href="events.php?r=event&id=<?php echo $event['id']; ?>">
+                            <?php echo $event['title']; ?>
+                        </a></h3><br><br>
+                    <ul class="event-meta">
+                        <li>
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                            <?php echo $event['date']; ?>
+                        </li>
+                        <li>
+                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                            <?php echo $event['location']; ?>
+                        </li>
+                    </ul>
+                    <p><?php echo substr(decode($event['description']), 0, 60); ?>...</p>
+                </div>
+                <div class="events-item-link">
+                    <a href="events.php?r=event&id=<?php echo $event['id']; ?>" class="hvr-push">Read More</a>
+                </div>
+                <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] === 1) { ?>
+                <hr>
+                <div class="col-xs-12" style="padding-bottom:20px;display:flex;justify-content:space-around">
+                    <a class="deleteCheck"
+                       href="<?php echo $_SERVER['PHP_SELF'] ?>?r=delete&id=<?php echo $event['id']; ?>">
+                        <div class="btn btn-danger"><i class="fa fa-remove"></i> Delete</div>
+                    </a>
+                    <a href="<?php echo $_SERVER['PHP_SELF'] ?>?r=edit&id=<?php echo $event['id']; ?>">
+                        <div class="btn btn-success"><i class="fa fa-edit"></i> Edit</div>
+                    </a>
+                </div>
+            <?php } ?>
+            </div>
+        </div>
+            <?php } ?>
+            </div>
+            </div>
+            </section>
+            <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] === 1) { ?>
+                <div class="alert-box hidden">
+                    <div class="alert alert-danger h1">
+                        Are you Sure You Want to Delete this Event?
+                    </div>
+                    <div class="btns" style="display:flex;justify-content: space-around;align-items: center;">
+                        <div data-val="1" class="btn btn-danger btn-lg confirmDelete">Yes</div>
+                        <div data-val="0" class="btn btn-info btn-lg cancelDelete" style="margin-left:20px;">No</div>
                     </div>
                 </div>
             <?php } ?>
-            <?php } ?>
-            </div>
-        </div>
-    </section>
-        <?php if (isset($_SESSION) && $_SESSION['admin'] === 1) { ?>
-        <div class="alert-box hidden">
-            <div class="alert alert-danger h1">
-                Are you Sure You Want to Delete this Event?
-            </div>
-            <div class="btns" style="display:flex;justify-content: space-around;align-items: center;">
-                <div data-val="1" class="btn btn-danger btn-lg confirmDelete">Yes</div>
-                <div data-val="0" class="btn btn-info btn-lg cancelDelete" style="margin-left:20px;">No</div>
-            </div>
-        </div>
-<?php }
-        } else {
-        echo '<section class="events-list text-center">No Events Added</section>';
-    }
+                <?php
+            } else {
+                echo '<section class="events-list text-center h1">No Events Added</section>';
+            }
 } elseif ($action === 'event') {
     if (isset($_GET['id'])) {
+
         $query = $con->prepare('SELECT * FROM events WHERE id=?');
         $query->execute(array($_GET['id']));
         if ($query->rowCount() > 0) {
@@ -115,7 +128,12 @@ if ($action === 'all') { ?>
                 ];
                 $i++;
             }
-
+            $title = ucfirst($event['title']);
+            $caption = "<span class=\"tag\">" . ucfirst($event['event_type']) . "</span>
+                    <h2>". $title ."</h2>
+                    <p>" . $event['location'] . " | <span>" . date("M d, Y",strtotime($event['date'])) . "</span></p>";
+            $headerClass = "events-single-hero";
+            require_once 'partials/header.html';
         ?>
 
             <section class="events-single-content">
@@ -126,18 +144,18 @@ if ($action === 'all') { ?>
 
                             <h4>Mission:</h4><br>
                             <div class="event-des">
-                                <ol class="event-list">
-                                    <li>Debating the different careers and showing the possible ways to achieve that career through education or using different skills.</li>
-                                    <li>Getting to know more about the labor market and understanding how graduates start their career in it.</li>
-                                    <li>Learning how to create your own C.V. and know how to design and paln for your future.</li>
-                                    <li>Having a chance to know tips and how they achieved their goals.</li>
-                                    <li>Showing the difference between career and avocation.</li>
-                                    <li>Teaching how to make decisions by the experience of the others.</li>
-                                </ol>
+                                <p>
+                                <?php echo decode($event['mission']);?>
+                                </p>
                             </div>
-
+                            <h4>Goals:</h4><br>
+                            <div class="event-des">
+                                <p>
+                                <?php echo decode($event['goals']);?>
+                                </p>
+                            </div>
                             <h4>More About this Event:</h4><br>
-                            <p><?php echo $event['description'];?></p>
+                            <p><?php echo decode($event['description'])?></p>
                             <?php
                                 if (intval($event['event_open']) === 1) {
                                     $open = true;
@@ -151,6 +169,10 @@ if ($action === 'all') { ?>
                                     ?>
                             <a href="events.php?r=toggle&id=<?php echo $_GET['id']; ?>">
                                 <span class="btn btn-warning"><?php echo $open?'Close Registeration':'Open Registeration';?></span>
+                            </a>
+                                    <hr>
+                            <a href="get-attendees.php?id=<?php echo $_GET['id']; ?>">
+                                <span class="btn btn-primary">Get Attendees File.</span>
                             </a>
                             <?php } ?>
                         </div>
@@ -208,7 +230,9 @@ if ($action === 'all') { ?>
                                         <div class="events-item-info">
                                             <h3><a href="events.php?r=event&id=<?php echo $event['id'];?>">
                                                     <?php echo $event['title'];?>
-                                                </a></h3><br><br>
+                                                </a>
+                                            </h3>
+                                            <br><br>
                                             <ul class="event-meta">
                                                 <li>
                                                     <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -219,15 +243,10 @@ if ($action === 'all') { ?>
                                                     <?php echo $event['location'];?>
                                                 </li>
                                             </ul>
-                                            <p><?php echo substr($event['description'], 0, 60);?>...</p>
+                                            <p><?php echo substr(decode($event['description']), 0, 60);?>...</p>
                                         </div>
                                         <div class="events-item-link">
                                             <a href="events.php?r=event&id=<?php echo $event['id'];?>" class="hvr-push">Read More</a>
-                                        </div>
-                                        <hr>
-                                        <div class="col-xs-12" style="padding-bottom:20px;display:flex;justify-content:space-around">
-                                            <a class="deleteCheck" href="<?php echo $_SERVER['PHP_SELF']?>?r=delete&id=<?php echo $event['id'];?>"><div class="btn btn-danger"><i class="fa fa-remove"></i> Delete</div></a>
-                                            <a href="<?php echo $_SERVER['PHP_SELF']?>?r=edit&id=<?php echo $event['id'];?>"><div class="btn btn-success"><i class="fa fa-edit"></i> Edit</div></a>
                                         </div>
                                     </div>
                                 </div>
@@ -248,10 +267,12 @@ if ($action === 'all') { ?>
                 echo '<section class="events-list text-center">No Other Events</section>';
             }
         } else {
-            echo "Event Does Not Exist";
+            header("Location:events.php");
+            exit();
         }
     } else {
-        echo "Event's ID Does Not Exist";
+        header("Location:events.php");
+        exit();
     }
 } elseif ($action === 'toggle' && $_SESSION['admin'] === 1) {
     $query=$con->prepare("SELECT event_open FROM events WHERE id = ?");
@@ -265,13 +286,14 @@ if ($action === 'all') { ?>
     exit();
 } elseif ($action === 'add' && $_SESSION['admin'] === 1) {
     $noBtns = true;
+    require_once 'partials/header.html';
     ?>
     <section class="add-event-form">
         <div class="container">
             <form action="<?php echo $_SERVER['PHP_SELF'] . '?r=insert' ?>" id="event-form" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label class="control-label">Event Name:</label>
-                    <input type="text" data-check="[^A-z0-9 ]" class="form-control"  id="event-name" placeholder="Event Title" name="name">
+                    <input type="text" data-check="[^A-Za-z0-9. ]" class="form-control"  id="event-name" placeholder="Event Title" name="name">
                 </div>
                 <div class="form-group">
                     <label class="control-label">Event Date:</label>
@@ -279,12 +301,12 @@ if ($action === 'all') { ?>
                 </div>
                 <div class="form-group">
                     <label class="control-label">Event Location:</label>
-                    <input type="text" data-check="[^A-z0-9 ,\\-]" placeholder="Event Location" id="event-loc"  class="form-control" name="location">
+                    <input type="text" data-check="[^A-Za-z0-9 ,\\-]" placeholder="Event Location" id="event-loc"  class="form-control" name="location">
                 </div>
                 <div class="form-group">
                     <label class="control-label">Speakers Names: <i id="addSpeaker" class="fa fa-plus btn btn-success"></i></label>
                     <div class="speakers">
-                        <input type="text" data-check="[^A-z ]" class="form-control" id="speaker-name" placeholder="Speaker's Name" name="speaker_name_1">
+                        <input type="text" data-check="[^A-Za-z ]" class="form-control" id="speaker-name" placeholder="Speaker's Name" name="speaker_name_1">
                     </div>
                 </div>
                 <div class="form-group">
@@ -295,11 +317,11 @@ if ($action === 'all') { ?>
                 </div>
                 <div class="form-group">
                     <label class="control-label">Event Mission:</label>
-                    <input type="text" class="form-control" data-check="[^A-z0-9 ,\\-\\(.)]" id="event-mission"  placeholder="Event Mission" name="mission">
+                    <textarea class="form-control textarea" data-check="[^A-Za-z0-9.\\- ,]" id="event-mission"  placeholder="Event Mission" name="mission"></textarea>
                 </div>
                 <div class="form-group">
                     <label class="control-label">Event Goals:</label>
-                    <input type="text" class="form-control" id="event-goals" data-check="[^A-z0-9 ,\\-\\(.)]" placeholder="Event Goals" name="goals">
+                    <textarea class="form-control textarea" id="event-goals" data-check="[^A-Za-z0-9.\\- ,]" placeholder="Event Goals" name="goals"></textarea>
                 </div>
                 <div class="form-group">
                     <select class="form-control" name="event_type">
@@ -311,7 +333,7 @@ if ($action === 'all') { ?>
                 </div>
                 <div class="form-group">
                     <label class="control-label">Event Description:</label>
-                    <textarea name="description" class="form-control" cols="30" rows="10" data-check="[^\w ,\\-\\(.)]"></textarea>
+                    <textarea name="description" class="form-control textarea" cols="30" rows="10" data-check="[^A-Za-z0-9.\\- ,]"></textarea>
                 </div>
                 <div class="form-group">
                     <label class="control-label">Upload Event Image:</label>
@@ -324,15 +346,16 @@ if ($action === 'all') { ?>
     <script src="js/event_validation.js"></script>
 <?php } elseif ($action === 'insert') {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        //TODO: handle empty speakers name
         $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
-        $date = filter_var($_POST['date'], FILTER_SANITIZE_STRING);
+        $date = date('Y-m-d',strtotime(filter_var($_POST['date'], FILTER_SANITIZE_STRING)));
         $image = 'images/events/' . sha1(substr($_FILES['event_image']['name'], 0, strlen($_FILES['event_image']['name']) - 5)) . substr($_FILES['event_image']['name'], strlen($_FILES['event_image']['name']) - 4);
         $location = filter_var($_POST['location'], FILTER_SANITIZE_STRING);
-        $description = filter_var($_POST['description'], FILTER_SANITIZE_STRING);
+        $description = encode(filter_var($_POST['description'], FILTER_SANITIZE_STRING));
         $speakersArray = array();
         $speakers_imagesArray = array();
-        $mission = filter_var($_POST['mission'], FILTER_SANITIZE_STRING);
-        $goals = filter_var(htmlspecialchars($_POST['goals']), FILTER_SANITIZE_STRING);
+        $mission = encode(filter_var($_POST['mission'], FILTER_SANITIZE_STRING));
+        $goals = encode(filter_var($_POST['goals'], FILTER_SANITIZE_STRING));
         $event_type = filter_var($_POST['event_type'], FILTER_SANITIZE_STRING);
         foreach ($_POST as $key => $value) {
             if (preg_match('/(speaker_name)/', $key)) {
@@ -345,7 +368,7 @@ if ($action === 'all') { ?>
             if (preg_match('/(speaker_image)/', $key)) {
                 if (strlen($_FILES[$key]['name']) > 0) {
                     $speakerImgName = 'images/speakers/' . sha1(substr($_FILES[$key]['name'], 0, strlen($_FILES[$key]['name']) - 5)) . '_' . $key . substr($_FILES[$key]['name'], strlen($_FILES[$key]['name']) - 4);
-                    move_uploaded_file($_FILES[$key]['tmp_name'], __DIR__ . $speakerImgName);
+                    move_uploaded_file($_FILES[$key]['tmp_name'], __DIR__ . '/' . $speakerImgName);
                 } else {
                     $speakerImgName = 'images/speakers/person-vector.jpg';
                 }
@@ -360,6 +383,7 @@ if ($action === 'all') { ?>
                                     VALUES (?,?,?,?,?,?,?,?,?,?)");
         $query->execute(array($name, $image, $date, $location, $description, $speakers, $speakers_images, $mission, $goals, $event_type));
         $title='';
+        require_once 'partials/header.html';
         ?>
         <div class="alert alert-success text-center others-section" style="font-size:30px">Adding Your Event</div>
         <?php
@@ -391,7 +415,7 @@ if ($action === 'all') { ?>
                 ];
                 $i++;
             }
-            $title='';
+            require_once 'partials/header.html';
             ?>
     <section class="add-event-form">
         <div class="container">
@@ -451,11 +475,11 @@ if ($action === 'all') { ?>
                 <?php } ?>
                 <div class="form-group">
                     <label class="control-label">Event Mission:</label>
-                    <input type="text" class="form-control" data-check="[^A-z0-9 ,\\-\\(.)]" id="event-mission"  placeholder="Event Mission" name="mission" value="<?php echo $event['mission'];?>">
+                    <textarea class="form-control textarea" data-check="[^A-Za-z0-9.\\- ,]" id="event-mission"  placeholder="Event Mission" name="mission"><?php echo preg_replace("<<br />>", "",decode($event['mission']));?></textarea>
                 </div>
                 <div class="form-group">
                     <label class="control-label">Event Goals:</label>
-                    <input type="text" class="form-control" id="event-goals" data-check="[^A-z0-9 ,\\-\\(.)]" placeholder="Event Goals" name="goals" value="<?php echo $event['goals'];?>">
+                    <textarea class="form-control textarea" id="event-goals" data-check="[^A-Za-z0-9.\\- ,]" placeholder="Event Goals" name="goals"><?php echo preg_replace("<<br />>", "",decode($event['goals']));?></textarea>
                 </div>
                 <div class="form-group">
                     <select class="form-control" name="event_type">
@@ -466,7 +490,7 @@ if ($action === 'all') { ?>
                 </div>
                 <div class="form-group">
                     <label class="control-label">Event Description:</label>
-                    <textarea name="description" class="form-control" cols="30" rows="10" data-check="[^\w ,\\-\\(.)]"> <?php echo $event['description'];?></textarea>
+                    <textarea name="description" class="form-control" cols="30" rows="10" data-check="[^\w ,\\-\\(.)]"> <?php echo preg_replace("<<br />>", "",decode($event['description']));?></textarea>
                 </div>
                 <div class="form-group">
                     <label class="control-label">Upload Event Image:</label>
@@ -498,17 +522,18 @@ if ($action === 'all') { ?>
         } elseif ($action === 'update') {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         //TODO: Put Old Pictures
+        //TODO: handle empty speakers name
         if (isset($_POST['id'])) {
             $id = filter_var(intval($_POST['id']), FILTER_SANITIZE_NUMBER_INT);
             $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
-            $date = filter_var($_POST['date'], FILTER_SANITIZE_STRING);
+            $date = date('Y-m-d',strtotime(filter_var($_POST['date'], FILTER_SANITIZE_STRING)));
             $image = 'images/events/' . sha1(substr($_FILES['event_image']['name'], 0, strlen($_FILES['event_image']['name']) - 5)) . substr($_FILES['event_image']['name'], strlen($_FILES['event_image']['name']) - 4);
             $location = filter_var($_POST['location'], FILTER_SANITIZE_STRING);
-            $description = filter_var($_POST['description'], FILTER_SANITIZE_STRING);
+            $description = encode(filter_var($_POST['description'], FILTER_SANITIZE_STRING));
             $speakersArray = array();
             $speakers_imagesArray = array();
-            $mission = filter_var($_POST['mission'], FILTER_SANITIZE_STRING);
-            $goals = filter_var(htmlspecialchars($_POST['goals']), FILTER_SANITIZE_STRING);
+            $mission = encode(filter_var($_POST['mission'], FILTER_SANITIZE_STRING));
+            $goals = encode(filter_var(htmlspecialchars($_POST['goals']), FILTER_SANITIZE_STRING));
             $event_type = filter_var($_POST['event_type'], FILTER_SANITIZE_STRING);
             foreach ($_POST as $key => $value) {
                 if (preg_match('/(speaker_name)/', $key)) {
@@ -517,6 +542,9 @@ if ($action === 'all') { ?>
             }
             $speakersArray = filter_var_array($speakersArray, FILTER_SANITIZE_STRING);
             $speakers = implode(',', $speakersArray);
+            $query3 = $con->prepare("SELECT * FROM events WHERE id = ?");
+            $query3->execute(array($id));
+            $event = $query3->fetchAll(PDO::FETCH_ASSOC)[0];
             foreach ($_FILES as $key => $value) {
                 if (preg_match('/(speaker_image)/', $key)) {
                     if (strlen($_FILES[$key]['name']) > 0) {
@@ -530,7 +558,11 @@ if ($action === 'all') { ?>
             }
             $speakers_imagesArray = filter_var_array($speakers_imagesArray, FILTER_SANITIZE_STRING);
             $speakers_images = implode(',', $speakers_imagesArray);
-            move_uploaded_file($_FILES['event_image']['tmp_name'], $image);
+            if ($event['image'] !== $image && !empty($_FILES['event_image']['tmp_name'])) {
+                move_uploaded_file($_FILES['event_image']['tmp_name'], $image);
+            } else {
+                $image = $event['image'];
+            }
             $query = $con->prepare("UPDATE `events` SET `title`=?,`image`=?,`date`=?,`location`=?,`description`=?,`speakers`=?,`speakers_images`=?, `mission`=?, `goals`=?, `event_type`=? WHERE id=?");
             $query->execute(array($name, $image, $date, $location, $description, $speakers, $speakers_images, $mission, $goals, $event_type, $id));
         }

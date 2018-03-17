@@ -75,6 +75,7 @@ function validateInputs(Form) {
             input.removeClass('error');
         }
     });
+    console.log($('input[type="text"]:not([name="date"]), textarea', $('#' + Form)));
     return error;
 }
 function checkSelect(Form) {

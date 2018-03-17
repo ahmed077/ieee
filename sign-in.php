@@ -1,97 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Sign In | IEEE PUA SB</title>
-
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/bootstrap.offcanvas.min.css">
-    <link rel="stylesheet" href="css/bootstrap-datepicker.min.css">
-    <link rel="stylesheet" href="css/bootstrap-select.min.css">
-    <link rel="stylesheet" href="css/featherlight.min.css">
-    <link rel="stylesheet" href="css/hover.min.css">
-    <link rel="stylesheet" href="css/core.css">
-
-    <!-- Custom styles for this template -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
-
-</head>
-
-<body>
-    <header id="masthead" class="site-header container">
-        <div class="row">
-            <div class="site-branding col-sm-3 col-md-3">
-                <h1 class="site-title">
-                    <a href="index.html" title="IEEE|PUA SB" |title="IEEE|PUA SB" rel="home">
-							<img src="images/ieee-logo.png" alt=IEEEPUAsb_logo title="IEEE|PUA SB" title="IEEE|PUA SB">
-						</a>
-                </h1>
-            </div>
-
-            <div class="col-sm-9 col-md-9">
-                <nav id="site-navigation" class="navbar">
-                    <div class="navbar-header">
-                        <div class="mobile-menu">
-                            <ul class="nav navbar-nav">
-                                <li>
-                                    <a href="sign-in.html" title="Sign In"><i class="fa fa-user-o fa-lg" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="register.html" style="font-size: 18px" title="Register"><i class="fa fa-user-plus" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <button type="button" class="navbar-toggle offcanvas-toggle" data-toggle="offcanvas" data-target="#js-bootstrap-offcanvas">
-								<span class="sr-only">Toggle navigation</span>
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-							</button>
-                    </div>
-                    <div class="navbar-offcanvas navbar-offcanvas-touch navbar-offcanvas-right" id="js-bootstrap-offcanvas">
-                        <button type="button" class="offcanvas-toggle closecanvas" data-toggle="offcanvas" data-target="#js-bootstrap-offcanvas">
-								<i class="fa fa-times fa-2x" aria-hidden="true"></i>
-							</button>
-                        <ul class="nav navbar-nav">
-                            <li><a href="index.html">Home</a></li>
-                            <li><a href="events.html">Events</a></li>
-                            <li><a href="news.html">News</a></li>
-                            <li><a href="schedule.html">Schedule</a></li>
-                            <li><a href="board.html">Board</a></li>
-                            <li><a href="contact.html">Contact</a></li>
-                            <li><a href="gallery.html">Gallery</a></li>
-                            <li><a href="committee.html">Committees</a></li>
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li class="active"><a href="sign-in.html" title="Sign In"><i class="fa fa-user-o fa-lg" aria-hidden="true"></i></a></li>
-                            <!--<li><a href="register.html" style="font-size: 18px" title="Register"><i class="fa fa-user-plus" aria-hidden="true"></i></a></li>-->
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
-    </header>
-
-    <section class="contact-hero contact-login">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-caption">
-                    <h2>Sign In</h2>
-                </div>
-            </div>
-        </div>
-    </section>
+<?php
+ob_start();
+session_start();
+$title = 'login';
+$caption = '<h2>Sign In</h2>';
+require_once 'includes/init.php';
+?>
 
     <section class="sign-in-form">
 

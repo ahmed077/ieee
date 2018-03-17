@@ -4,9 +4,7 @@ session_start();
 $title = 'Register Attendance';
 $returnTop = false;
 $caption = '';
-require_once 'includes/init.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title="Event Subscribtion";
     $caption="";
     require_once 'includes/init.php';
     $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
@@ -28,14 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php }
 } else {
     if (isset($_GET['id'])) {
-        $title="Event Subscribtion";
         require_once 'includes/connect.php';
+        require_once 'includes/functions.php';
         $id = $_GET['id'];
         $query=$con->prepare("SELECT `id`, `title` FROM events WHERE id=?");
         $query->execute(array($id));
         $name = $query->fetchAll(PDO::FETCH_ASSOC)[0]['title'];
         $caption="<h2>".ucfirst($name)."</h2>";
-        $title='contact-login contact';
+        $headerClass = "contact-hero contact-login";
         require_once 'partials/header.html';
     if ($query->rowCount() > 0) { ?>
         <section class="sign-up-form">
@@ -183,6 +181,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <?php
     } else {
+    $headerClass = "news-hero";
+    $caption = "<h2>Available Events</h2>";
+        require_once 'includes/init.php';
     $query = $con->prepare("SELECT * FROM events WHERE event_open = 1");
     $query->execute();
     if ($query->rowCount() > 0) {
@@ -217,11 +218,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="events-item-link">
                                     <a href="events.php?r=event&id=<?php echo $event['id'];?>" class="hvr-push">Read More</a>
                                 </div>
+                                <?php if(isset($_SESSION['admin']) && intval($_SESSION['admin']) === 1) {?>
                                 <hr>
                                 <div class="col-xs-12" style="padding-bottom:20px;display:flex;justify-content:space-around">
                                     <a class="deleteCheck" href="<?php echo $_SERVER['PHP_SELF']?>?r=delete&id=<?php echo $event['id'];?>"><div class="btn btn-danger"><i class="fa fa-remove"></i> Delete</div></a>
                                     <a href="<?php echo $_SERVER['PHP_SELF']?>?r=edit&id=<?php echo $event['id'];?>"><div class="btn btn-success"><i class="fa fa-edit"></i> Edit</div></a>
                                 </div>
+                <?php } ?>
                             </div>
                         </div>
                     <?php } ?>

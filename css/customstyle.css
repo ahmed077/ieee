@@ -40,6 +40,9 @@
     max-width:200px;
     margin:0 10px 10px;
 }
+.events-single-content p:last-child {
+    margin-bottom:30px;
+}
 /*Events Page End*/
 
 /*Delete Check*/
