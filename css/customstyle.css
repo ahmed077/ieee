@@ -1,3 +1,22 @@
+/*Header Fix*/
+.dropdown-menu.shown{
+    display:block;
+    background-color:#ffffff80;
+    padding:0;
+    margin:0;
+}
+
+.site-header #site-navigation .nav .dropdown-menu.shown a::before {
+    background:none;
+}
+.site-header #site-navigation .dropdown-menu.shown li a {
+    padding:10px;
+    border:0;
+}
+.site-header #site-navigation .nav .dropdown-menu.shown a:hover {
+    color:#333;
+    transform:translate(3px);
+}
 /*Events Custom Styles*/
 .events-list .events-item .events-item-img a {
     height:154px;
@@ -59,7 +78,24 @@
     align-items : center;
     flex-direction : column;
 }
-/*Delete Check*/
+
+
+/*News Page*/
+.latest-news .news-item, .latest-news-single .news-item {
+    min-height: auto;
+}
+.news-title{
+    height:60px;
+}
+.news-image {
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height:200px;
+    display:block;
+}
+/*News Page*/
+
 
 /* Other Small Pages Section*/
 .others-section {
@@ -91,4 +127,77 @@
     color : whitesmoke;
     text-align: center;
     font-size: 50px;
+}
+
+/*Footer Fix*/
+.site-footer .footer-menu {
+    display: flex;
+    justify-content: center;
+}
+@media(min-width:975px) {
+    .site-footer .footer-logo{
+        background-color:unset;
+    }
+}
+/*custom styles*/
+.bg{
+
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.flex {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap:wrap;
+}
+
+/*Home Page*/
+.home-event-img {
+    height:140px;
+    display: block;
+}
+.featured-gallery .row > div {
+    padding:0
+}
+.home-gallery .gallery-item:first-of-type {
+    width:50%;
+    height:508px;
+}
+.home-gallery .gallery-item {
+    width:25%;
+}
+/*Gallery Page*/
+.featherlight-inner img {
+    max-height:430px;
+}
+.gallery-item{
+    width:33.33333%;
+    height:254px;
+    cursor: pointer;
+}
+.gallery-item .gallery-img {
+    height:100%;
+}
+.gallery-img:hover {
+    outline: 10px solid #f58c04;
+    outline-offset: -9px;
+    opacity: .8;
+    transition: all 0.3s;
+}
+.gallery-img .delete {
+    opacity:0;
+    transition:opacity 0.3s ease-in-out;
+}
+.gallery-img:hover .delete{
+    opacity:1;
+}
+
+/*Volunteers Page*/
+.volunteers .imageOfVolunteer {
+    height:200px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
 }
