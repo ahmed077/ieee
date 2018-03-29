@@ -29,17 +29,19 @@
 
     <!--New Styles-->
     <link rel="stylesheet" href="css/customstyle.css">
+    <?php if (isset($mega) && $mega) {?>
+    <link rel="stylesheet" href="css/megaForm.css">
+    <?php }?>
 
 </head>
 
 <body>
 <header id="masthead" class="site-header container">
-
     <div class="row">
         <div class="site-branding col-sm-3 col-md-3">
             <h1 class="site-title">
-                <a href="index.php" title="IEEE PUA SB" rel="home">
-                    <img src="images/ieee-logo.png" alt="IEEEPUAsb_logo" title="IEEE PUA SB">
+                <a href="index.html" title="IEEE|PUA SB" rel="home">
+                    <img src="images/ieee-logo.png" alt=IEEEPUAsb_logo title="IEEE|PUA SB">
                 </a>
             </h1>
         </div>
@@ -49,14 +51,15 @@
                 <div class="navbar-header">
                     <div class="mobile-menu">
                         <ul class="nav navbar-nav">
-                            <li>
-                                <a href="login.php" title="Sign In"><i class="fa fa-user-o fa-lg" aria-hidden="true"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="register.php" style="font-size: 18px" title="Register"><i class="fa fa-user-plus" aria-hidden="true"></i>
-                                </a>
-                            </li>
+                            <?php if (isset($_SESSION['admin']) && isset($_SESSION['name'])) {?>
+                            <li><a href="logout.php" title="Sign Out"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i></a></li>
+                            <?php } else { ?>
+                            <li class="<?php if ($title === 'login') {echo 'active';} ?>"><a href="sign-in.php" title="Sign In"><i class="fa fa-user-o fa-lg" aria-hidden="true"></i></a></li>
+                            <?php } ?>
+                            <!--<li>-->
+                                <!--<a href="register.html" style="font-size: 18px" title="Register"><i class="fa fa-user-plus" aria-hidden="true"></i>-->
+                                <!--</a>-->
+                            <!--</li>-->
                         </ul>
                     </div>
                     <button type="button" class="navbar-toggle offcanvas-toggle" data-toggle="offcanvas" data-target="#js-bootstrap-offcanvas">
@@ -72,35 +75,53 @@
                     </button>
                     <ul class="nav navbar-nav">
                         <li class="<?php if ($title === 'home') {echo 'active';} ?>"><a href="index.php">Home</a></li>
-                        <li class="<?php if ($title === 'events') {echo 'active';} ?>"><a href="events.php">Events</a></li>
-                        <li class="<?php if ($title === 'schedule') {echo 'active';} ?>"><a href="schedule.html">Schedule</a></li>
-                        <li class="<?php if ($title === 'board') {echo 'active';} ?>"><a href="board.html">Board</a></li>
-                        <li class="<?php if ($title === 'volunteers') {echo 'active';} ?>"><a href="volunteers.php">Voluteers</a></li>
-                        <li class="<?php if ($title === 'gallery') {echo 'active';} ?>"><a href="gallery.html">gallery</a></li>
-                        <li class="<?php if ($title === 'committees') {echo 'active';} ?>"><a href="committee.html">Committees</a></li>
-                        <li class="<?php if ($title === 'contact') {echo 'active';} ?>"><a href="contact.html">Contact</a></li>
-                        <?php if(isset($_SESSION['name'])){ ?>
-                        <li class="alert alert-danger"><?php echo ucfirst($_SESSION['name']); ?></li>
-                        <li><a href="logout.php">Logout</a></li>
-                        <?php } else {?>
-                        <!-- Login/Register Links -->
-                        <li><a href="login.php">Login</a></li>
-                        <?php }?>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Activities <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li class="<?php if (preg_match('/(event)/i',$title)) {echo 'active';} ?>"><a href="events.php">Events</a></li>
+                                <li class="<?php if ($title === 'news') {echo 'active';} ?>"><a href="news.php">News</a></li>
+                                <li class="<?php if ($title === 'schedule') {echo 'active';} ?>"><a href="schedule.html">Schedule</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Our Team<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li class="<?php if ($title === 'board') {echo 'active';} ?>"><a href="board.html">Board</a></li>
+                                <li class="<?php if ($title === 'volunteers') {echo 'active';} ?>"><a href="volunteers.php">Volunteers</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="<?php if ($title === 'gallery') {echo 'active';} ?>"><a href="gallery.php">Gallery</a></li>
+                        <li class="<?php if ($title === 'courses') {echo 'active';} ?>"><a href="courses.html">Courses</a></li>
+                        <!--<li class="<?php if ($title === 'benefits') {echo 'active';} ?>"><a href="benefits.html">benefits</a></li>-->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">About Us<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li class="<?php if ($title === 'contact') {echo 'active';} ?>"><a href="contact.html">Contact</a></li>
+                                <li class="<?php if ($title === 'committee') {echo 'active';} ?>"><a href="committee.html">Committees</a></li>
+                            </ul>
+                        </li>
                     </ul>
-                    <!--<ul class="nav navbar-nav navbar-right">
-<li><a href="sign-in.html" title="Sign In"><i class="fa fa-user-o fa-lg" aria-hidden="true"></i></a></li>
-<li><a href="register.html" style="font-size: 18px" title="Register"><i class="fa fa-user-plus" aria-hidden="true"></i></a></li>
-</ul>-->
+                    <ul class="nav navbar-nav navbar-right">
+                        <?php if (isset($_SESSION['admin']) && isset($_SESSION['name'])) {?>
+                        <li><a href="logout.php" title="Sign Out"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i></a></li>
+                        <?php } else { ?>
+                        <li class="<?php if ($title === 'login') {echo 'active';} ?>"><a href="sign-in.php" title="Sign In"><i class="fa fa-user-o fa-lg" aria-hidden="true"></i></a></li>
+                        <?php } ?>
+                        <!--<li><a href="register.html" style="font-size: 18px" title="Register"><i class="fa fa-user-plus" aria-hidden="true"></i></a></li>-->
+                    </ul>
                 </div>
             </nav>
         </div>
     </div>
 </header>
 <?php
-$titles = ['home','events','events-single','news','news-single','contact','gallery','page-not-found','schedule','login','sign-up','404', 'volunteers', 'contact-login contact'];
+$titles = ['home','events','events-single','news','news-single','contact','page-not-found','schedule','login','sign-up','404', 'volunteers', 'contact-login contact','gallery'];
 $title=strtolower($title);
 if (!in_array($title, $titles)) {
-    $headerClass = 'default-hero';
+    if (!isset($headerClass)){
+        $headerClass = 'default-hero';
+    }
 } else {
     if ($title ==='home') {
         $headerClass = 'hero-3';

@@ -17,7 +17,7 @@ if ($action === 'all') {
     $caption = '<h2>Our Events</h2>';
     require_once 'partials/header.html';
     ?>
-    <section class="events-search-filter">
+    <section class="events-search-filter" style="background-color:#fff;">
         <div class="container">
             <div class="row">
                 <div class="section-content clearfix">
@@ -37,12 +37,73 @@ if ($action === 'all') {
                 <a href="events.php?r=add" id="addS">
                     <div class="btn btn-lg btn-success"><i class="fa fa-plus"></i> Add Event</div>
                 </a>
+                <a href="mega.php?r=add" id="addM" style="margin-left:20px;">
+                    <div class="btn btn-lg btn-primary"><i class="fa fa-plus"></i> Add Mega Event</div>
+                </a>
             </div>
         <?php } ?>
         </div>
     </section>
     <?php
-    $query = $con->prepare('SELECT * FROM events ORDER BY DATE DESC');
+    $query2 = $con->prepare('SELECT * FROM events WHERE `mega` = 1 ORDER BY DATE DESC');
+    $query2->execute();
+    if ($query2->rowCount() > 0) {
+        $megaEvents = $query2->fetchAll(PDO::FETCH_ASSOC);
+        ?>
+
+        <section class="events-list">
+            <div class="container">
+                <div id="events-list" class="row">
+                    <h2 class="h1 text-center" style="margin:-30px 0 30px">Mega Events</h2>
+        <?php foreach ($megaEvents as $megaEvent) { ?>
+            <div class="col-xs-12 <?php echo $megaEvent['event_type'];?>">
+                <div class="events-item">
+                    <div class="events-item-img">
+                        <a href="mega.php?r=event&id=<?php echo $megaEvent['id']; ?>"
+                           style="background-image:url('<?php echo $megaEvent['image']; ?>');">
+                        </a>
+                    </div>
+                    <div class="events-item-info">
+                        <h3><a href="mega.php?r=event&id=<?php echo $megaEvent['id']; ?>">
+                                <?php echo $megaEvent['title']; ?>
+                            </a></h3><br><br>
+                        <ul class="event-meta">
+                            <li>
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                                <?php echo $megaEvent['date']; ?>
+                            </li>
+                            <li>
+                                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                <?php echo $megaEvent['location']; ?>
+                            </li>
+                        </ul>
+                        <p><?php echo substr(decode($megaEvent['description']), 0, 500); ?>...</p>
+                    </div>
+                    <div class="events-item-link">
+                        <a href="mega.php?r=event&id=<?php echo $megaEvent['id']; ?>" class="hvr-push">Read More</a>
+                    </div>
+                    <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] === 1) { ?>
+                        <hr>
+                        <div class="col-xs-12" style="padding-bottom:20px;display:flex;justify-content:space-around">
+                            <a class="deleteCheck"
+                               href="mega.php?r=delete&id=<?php echo $megaEvent['id']; ?>">
+                                <div class="btn btn-danger"><i class="fa fa-remove"></i> Delete</div>
+                            </a>
+                            <a href="mega.php?r=edit&id=<?php echo $megaEvent['id']; ?>">
+                                <div class="btn btn-success"><i class="fa fa-edit"></i> Edit</div>
+                            </a>
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
+        <?php } ?>
+                </div>
+            </div>
+        </section>
+        <hr style="margin:0">
+    <?php } ?>
+    <?php
+    $query = $con->prepare('SELECT * FROM events WHERE `mega` = 0 ORDER BY DATE DESC');
     $query->execute();
     if ($query->rowCount() > 0) {
         $events = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -50,8 +111,9 @@ if ($action === 'all') {
         <section class="events-list">
             <div class="container">
                 <div id="events-list" class="row">
+                    <h2 class="h1 text-center" style="margin:-80px 0 20px">Normal Events</h2>
     <?php foreach ($events as $event) { ?>
-        <div class="col-xs-6 col-lg-3 <?php echo $event['event_type']; ?>">
+        <div class="col-xs-6 col-lg-3 <?php echo $event['event_type'];?>">
             <div class="events-item">
                 <div class="events-item-img">
                     <a href="events.php?r=event&id=<?php echo $event['id']; ?>"
@@ -357,6 +419,7 @@ if ($action === 'all') {
         $mission = encode(filter_var($_POST['mission'], FILTER_SANITIZE_STRING));
         $goals = encode(filter_var($_POST['goals'], FILTER_SANITIZE_STRING));
         $event_type = filter_var($_POST['event_type'], FILTER_SANITIZE_STRING);
+        $mega = $event_type === 'mega' ? true: false;
         foreach ($_POST as $key => $value) {
             if (preg_match('/(speaker_name)/', $key)) {
                 $speakersArray[] = $value;
@@ -379,9 +442,9 @@ if ($action === 'all') {
         $speakers_images = implode(',', $speakers_imagesArray);
         move_uploaded_file($_FILES['event_image']['tmp_name'], $image);
         $query = $con->prepare("INSERT INTO events 
-                                    (`title`,`image`,`date`,`location`,`description`,`speakers`,`speakers_images`,`mission`,`goals`,`event_type`) 
-                                    VALUES (?,?,?,?,?,?,?,?,?,?)");
-        $query->execute(array($name, $image, $date, $location, $description, $speakers, $speakers_images, $mission, $goals, $event_type));
+                                    (`title`,`image`,`date`,`location`,`description`,`speakers`,`speakers_images`,`mission`,`goals`,`event_type`,`mega`) 
+                                    VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+        $query->execute(array($name, $image, $date, $location, $description, $speakers, $speakers_images, $mission, $goals, $event_type, $mega));
         $title='';
         require_once 'partials/header.html';
         ?>
@@ -393,8 +456,10 @@ if ($action === 'all') {
         exit();
     }
     } elseif ($action === 'delete') {
-        $query = $con->prepare("DELETE FROM `events` WHERE `id` = ?");
-        $query->execute(array($_GET['id']));
+        if(isset($_SESSION['admin']) && in_array($_SESSION['admin'],[1,2,3])) {
+            $query = $con->prepare("DELETE FROM `events` WHERE `id` = ?");
+            $query->execute(array($_GET['id']));
+        }
         header("refresh:0;url=events.php");
         exit();
     } elseif ($action === 'edit') {
@@ -427,7 +492,7 @@ if ($action === 'all') {
                 </div>
                 <div class="form-group">
                     <label class="control-label">Event Date:</label>
-                    <input type="text" class="form-control" name="date" placeholder="MM/DD/YYYY"  value="<?php echo $event['date'];?>">
+                    <input type="text" class="form-control" name="date" placeholder="MM/DD/YYYY"  value="<?php echo date('m-d-Y',strtotime($event['date']));?>">
                 </div>
                 <div class="form-group">
                     <label class="control-label">Event Location:</label>
@@ -500,15 +565,6 @@ if ($action === 'all') {
             </form>
         </div>
     </section>
-            <div class="alert-box hidden">
-                <div class="alert alert-danger h1">
-                    Are you Sure You Want to Edit this Event?
-                </div>
-                <div class="btns" style="display:flex;justify-content: space-around;align-items: center;">
-                    <div data-val="1" class="btn btn-danger btn-lg confirmDelete">Yes</div>
-                    <div data-val="0" class="btn btn-info btn-lg cancelDelete" style="margin-left:20px;">No</div>
-                </div>
-            </div>
     <script src="js/event_validation.js"></script>
     <?php
         } else {
@@ -581,4 +637,3 @@ if ($action === 'all') {
     require_once 'partials/footer.html';
     ob_end_flush();
 ?>
-

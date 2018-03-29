@@ -107,6 +107,7 @@ var workshop = document.getElementById('workshop'),
     workshopDiv = document.getElementsByClassName('workshop'),
     sessionsDiv = document.getElementsByClassName('session'),
     visitsDiv = document.getElementsByClassName('visit'),    
+    megaDiv = document.getElementsByClassName('mega'),
     j,
     h,
     k;
@@ -122,7 +123,6 @@ visits.onclick = function () {
     for (j = 0; j < visitsDiv.length; j = j + 1) {
         visitsDiv[j].style.display = "block";
     }
-
 };
 
 workshop.onclick = function () {

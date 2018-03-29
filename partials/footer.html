@@ -23,23 +23,23 @@
                     </div>
                     <div class="footer-links">
                         <ul>
-                            <li style="color: white">Our Events</li>
+                            <li style="color: white">Our Activities</li>
                             <li><a href="schedule.html">Schedule</a></li>
-                            <li><a href="gallery.html">Gallery </a></li>
+                            <li><a href="gallery.php">Gallery </a></li>
+                            <li><a href="events.php">Events</a></li>
                         </ul>
                     </div>
                     <div class="footer-links">
                         <ul>
                             <li style="color: white">Blog</li>
-                            <li><a href="news.html">Latest News</a></li>
-                            <li><a href="events.html">Events</a></li>
+                            <li><a href="news.php">Latest News</a></li>
                         </ul>
                     </div>
                     <div class="footer-links">
                         <ul>
                             <li style="color: white">Our Team</li>
                             <li><a href="board.html">Board</a></li>
-                            <li><a href="volunteers.html">Volunteers</a></li>
+                            <li><a href="volunteers.php">Volunteers</a></li>
                         </ul>
                     </div>
                     <div class="footer-links">
@@ -84,7 +84,7 @@
 <?php if (isset($noBtns) && $noBtns) {?>
 <?php
     } else {
-    $titles = ['committees','courses','events','home'];
+    $titles = ['committees','courses','events','home','gallery'];
     if (in_array($title,$titles)) {
 ?>
 <script src="js/<?php echo strtolower($title);?>.js"></script>

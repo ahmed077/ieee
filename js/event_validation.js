@@ -8,7 +8,7 @@ document.body.onload = function () {
 function formValidation (e, F) {
     var errorInputs = validateInputs(F.id),
         errorDate = isValidDate(F.id),
-        errorSelect = checkSelect(F.id);
+        errorSelect = checkSelect(F.id),
         errorImages = checkImages(F.id);
     if (!errorDate) {
         $('#' + F.id + ' input[name="date"]').addClass('error');
@@ -16,7 +16,7 @@ function formValidation (e, F) {
         $('#' + F.id + ' input[name="date"]').removeClass('error');
     }
     console.log(errorInputs);
-    if (errorInputs || !errorDate || errorSelect) {
+    if (errorInputs || !errorDate || errorSelect || errorImages) {
         console.log('error');
         e.preventDefault();
     } else {

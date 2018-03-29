@@ -9,7 +9,7 @@ $('.deleteCheck').on('click', function (e) {
         window.location.href = btn[0].href;
     });
 });
-$('#edit-event-form').on('submit', function () {
+$('#edit-event-form, #edit-news-form').on('submit', function () {
     var x = confirm("Are you sure you want to edit the event?");
     return x;
 });

@@ -50,27 +50,37 @@ if ($query->rowCount() > 0) {
         </div>
 
     </section>
-    <section class="megaEvent">
-        <img src="images/poster.jpg" alt="Mega Event">
-        <a href="MBB.php" class="btn btn-success btn-lg col-xs-12 megaBtn">Read More &amp; Register</a>
-    </section>
+<?php
+    $query=$con->prepare("SELECT * FROM events WHERE mega = TRUE and event_open = 1");
+    $query->execute(array());
+    if ($query->rowCount() > 0) {
+        $megaEvent = $query->fetch(PDO::FETCH_ASSOC);
+        ?>
+        <section class="megaEvent">
+            <img src="<?php echo $megaEvent['image'];?>" alt="Mega Event">
+            <a href="mega.php?r=event&id=<?php echo $megaEvent['id'];?>" class="btn btn-success btn-lg col-xs-12 megaBtn">Read More &amp; Register</a>
+        </section>
+    <?php } ?>
     <section class="we-have-faith">
         <div class="section-header col-sm-6 pull-left">
-            <h3 class="icon"><img src="images/mission-icon.png" alt="Mission Icon" title="Mission Icon" height="100" width="100"></h3>
+            <h3 class="icon"><img src="images/mission-icon.png" alt="Mission Icon" title="Mission Icon" height="100"
+                                  width="100"></h3>
             <h3>mission</h3>
             <p>
-                IEEE's core purpose is to foster technological innovation and excellence for the benefit of humanity.
+                IEEE's core purpose is to foster technological innovation and excellence for the benefit of
+                humanity.
             </p>
         </div>
         <div class="section-header vision col-sm-6 pull-left">
             <h3 class="icon"><i class="fa fa-eye" aria-hidden="true"></i></h3>
             <h3>vision</h3>
             <p>
-                IEEE will be essential to the global technical community and to technical professionals everywhere, and be universally recognized for the contributions of technology and of technical professionals in improving global conditions.
+                IEEE will be essential to the global technical community and to technical professionals everywhere,
+                and be universally recognized for the contributions of technology and of technical professionals in
+                improving global conditions.
             </p>
         </div>
     </section>
-
     <section class="achievements">
         <div class="container">
             <div class="row">
@@ -104,7 +114,6 @@ if ($query->rowCount() > 0) {
 <?php
 $query = $con->prepare('SELECT * FROM events ORDER BY DATE DESC LIMIT 4');
 $query->execute();
-print_r($_SESSION);
 if ($query->rowCount() > 0) {
     $events = $query->fetchAll(PDO::FETCH_ASSOC);
     ?>
@@ -116,8 +125,7 @@ if ($query->rowCount() > 0) {
                     <div class="col-xs-6 col-lg-3 workshop">
                         <div class="events-item">
                             <div class="events-item-img">
-                                <a href="events.php?r=event&id=<?php echo $event['id'];?>">
-                                    <img src="<?php echo $event['image'];?>" alt="Event Image">
+                                <a class="home-event-img bg" href="events.php?r=event&id=<?php echo $event['id'];?>" style="background-image:url(<?php echo $event['image'];?>);">
                                 </a>
                             </div>
                             <div class="events-item-info">
@@ -147,64 +155,37 @@ if ($query->rowCount() > 0) {
     </section>
 <?php } else {
     echo '<section class="events-list text-center h1">No Events Added</section>';
-} ?>
+}
+    $query = $con->prepare("SELECT * FROM gallery LIMIT 5");
+    $query->execute(array());
+    if ($query->rowCount()>0) {
+        $images = $query->fetchAll(PDO::FETCH_ASSOC);
+        $admin = (isset($_SESSION['admin']) && in_array(intval($_SESSION['admin']),[1,2,3]))? true : false;
+        $i=0;
+?>
 
     <section class="featured-gallery">
-        <div class="row">
-            <div class="col-sm-6">
-                <a href="#" data-featherlight="#content-1">
-                    <img src="images/gallery/focus/focus-3.jpg" alt="focus-3.jpg">
-                </a>
-                <div id="content-1" class="gallery-lightbox">
-                    <img src="images/gallery/focus/focus-3.jpg" alt="image">
+        <div class="row home-gallery">
+            <?php foreach ($images as $image) {$i++;?>
+            <div class="col-sm-<?php echo $i==1?6:3;?> gallery-item">
+                    <span class="gallery-img bg flex" data-featherlight="#content-<?php echo $i;?>" style="background-image:url('<?php echo $image['url'];?>')">
+                    </span>
+                <div id="content-<?php echo $i;?>" class="gallery-lightbox">
+                    <img src="<?php echo $image['url'];?>" alt="<?php echo $image['title'];?>">
                     <div class="gallery-lightbox-content">
-                        <p>IEEE Photoghraphy session. <br><a href="events/focus.html">FOCUS Event</a></p>
+                        <p><?php echo $image['description'];?>
+                            <br>
+                            <a href="events.php?r=event&id=<?php echo $image['event_id'];?>">
+                                <?php echo $image['title'];?>
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-3">
-                <a href="#" data-featherlight="#content-2">
-                    <img src="images/gallery/black-seekers/black-seekers-4.jpg" alt="black-seekers-4.jpg">
-                </a>
-                <div id="content-2" class="gallery-lightbox">
-                    <img src="images/gallery/black-seekers/black-seekers-4.jpg" alt="black-seekers-4.jpg">
-                    <div class="gallery-lightbox-content">
-                        <p>The robot is seeking the black line.<br><a href="events/the-black-seekers.html">The Black Seekers Event</a></p>
-                    </div>
-                </div>
-                <a href="#" data-featherlight="#content-3">
-                    <img src="images/gallery/career-debate/career-debate-9.jpg" alt="career-debate-9.jpg">
-                </a>
-                <div id="content-3" class="gallery-lightbox">
-                    <img src="images/gallery/career-debate/career-debate-9.jpg" alt="career-debate-9.jpg">
-                    <div class="gallery-lightbox-content">
-                        <p>Don't forget to Write down your notes.<br><a href="events/career-debate.html">Career Debate Event</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <a href="#" data-featherlight="#content-4">
-                    <img src="images/gallery/recruitmen-2017-2018/recruitmen-2017-2018-3.jpg" alt="recruitmen-2017-2018-3.jpg">
-                </a>
-                <div id="content-4" class="gallery-lightbox">
-                    <img src="images/gallery/recruitmen-2017-2018/recruitmen-2017-2018-3.jpg" alt="recruitmen-2017-2018-3.jpg">
-                    <div class="gallery-lightbox-content">
-                        <p>Smile for the camera.</p>
-                    </div>
-                </div>
-                <a href="#" data-featherlight="#content-5">
-                    <img src="images/gallery/surrender-the-me-for-the-we/surrender-the-me-for-the-we-3.jpg" alt="surrender-the-me-for-the-we-3">
-                </a>
-                <div id="content-5" class="gallery-lightbox">
-                    <img src="images/gallery/surrender-the-me-for-the-we/surrender-the-me-for-the-we-3.jpg" alt="surrender-the-me-for-the-we-3">
-                    <div class="gallery-lightbox-content">
-                        <p>Our speaker during the session.<br><a href="events/surrender-me-for-we.html">Surrender the Me for the We Event</a></p>
-                    </div>
-                </div>
-            </div>
+            <?php } ?>
         </div>
     </section>
-
+<?php } ?>
 
     <section class="testimonials">
         <div class="container">

@@ -35,9 +35,15 @@ if ($action === 'all') {
            
             
             <div class="col-xs-6 col-md-3 col-lg-3 volunteers">
-                <img class="imageOfVolunteer" src="<?php echo $volunteer['Img'] ?>" alt="" title="Abdallah Zaitton">
+                <span class="imageOfVolunteer bg" style="background-image:url(<?php echo $volunteer['Img'] ?>)">
+                    <?php if(isset($_SESSION['admin']) && $_SESSION['admin'] === 1){ ?>
+                        <a class="deleteCheck" href="<?php echo $_SERVER['PHP_SELF'];?>?r=delete&id=<?php echo $volunteer['ID'];?>">
+                        <i class="text-danger fa fa-remove fa-3x"></i>
+                    </a>
+                    <?php } ?>
+                </span>
                 <h2> <?php echo $volunteer['Name'] ?> </h2> <!-- to print the name  -->
-                <p>Volunteer in <?php echo $volunteer['Committee'] ?> Committee</p> 
+                <p>Volunteer in <?php echo $volunteer['Committee'] ?> Committee</p>
 
                 <div class="socialOfVol" style="margin-right: 0">
                     <div class="facebook">
@@ -51,11 +57,6 @@ if ($action === 'all') {
                         </a>
                     </div>
                 </div>
-                <?php if(isset($_SESSION['admin']) && $_SESSION['admin'] === 1){ ?>
-                    <a class="deleteCheck" href="<?php echo $_SERVER['PHP_SELF'];?>?r=delete&id=<?php echo $volunteer['ID'];?>">
-                        <div class="btn btn-danger">Delete</div>
-                    </a>
-                <?php } ?>
             </div>
 
             <?php } ?>

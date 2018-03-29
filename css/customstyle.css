@@ -193,11 +193,3 @@
 .gallery-img:hover .delete{
     opacity:1;
 }
-
-/*Volunteers Page*/
-.volunteers .imageOfVolunteer {
-    height:200px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-start;
-}

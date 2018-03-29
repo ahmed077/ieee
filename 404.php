@@ -9,8 +9,14 @@ require_once 'includes/init.php';
             background:rgb(0, 66, 150);
             position: static;
             margin:0 0 50px;
-            padding:30px 0;
+            padding:30px 50px;
             width:100%;
+        }
+        @media(max-width:400px) {
+            .site-header {
+                padding-left: 0;
+                padding-right: 0;
+            }
         }
         .404-hero {
             position: relative;
