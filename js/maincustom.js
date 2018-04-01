@@ -13,3 +13,10 @@ $('#edit-event-form, #edit-news-form').on('submit', function () {
     var x = confirm("Are you sure you want to edit the event?");
     return x;
 });
+function VolunteerImageFix() {
+    $('.imageOfVolunteer').height($('.imageOfVolunteer').parent().width());
+}
+VolunteerImageFix();
+$(window).on('resize', function () {
+    VolunteerImageFix();
+});
