@@ -37,71 +37,10 @@ if ($action === 'all') {
                 <a href="events.php?r=add" id="addS">
                     <div class="btn btn-lg btn-success"><i class="fa fa-plus"></i> Add Event</div>
                 </a>
-                <a href="mega.php?r=add" id="addM" style="margin-left:20px;">
-                    <div class="btn btn-lg btn-primary"><i class="fa fa-plus"></i> Add Mega Event</div>
-                </a>
             </div>
         <?php } ?>
         </div>
     </section>
-    <?php
-    $query2 = $con->prepare('SELECT * FROM events WHERE `mega` = 1 ORDER BY DATE DESC');
-    $query2->execute();
-    if ($query2->rowCount() > 0) {
-        $megaEvents = $query2->fetchAll(PDO::FETCH_ASSOC);
-        ?>
-
-        <section class="events-list">
-            <div class="container">
-                <div id="events-list" class="row">
-                    <h2 class="h1 text-center" style="margin:-30px 0 30px">Mega Events</h2>
-        <?php foreach ($megaEvents as $megaEvent) { ?>
-            <div class="col-xs-12 <?php echo $megaEvent['event_type'];?>">
-                <div class="events-item">
-                    <div class="events-item-img">
-                        <a href="mega.php?r=event&id=<?php echo $megaEvent['id']; ?>"
-                           style="background-image:url('<?php echo $megaEvent['image']; ?>');">
-                        </a>
-                    </div>
-                    <div class="events-item-info">
-                        <h3><a href="mega.php?r=event&id=<?php echo $megaEvent['id']; ?>">
-                                <?php echo $megaEvent['title']; ?>
-                            </a></h3><br><br>
-                        <ul class="event-meta">
-                            <li>
-                                <i class="fa fa-calendar" aria-hidden="true"></i>
-                                <?php echo $megaEvent['date']; ?>
-                            </li>
-                            <li>
-                                <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                <?php echo $megaEvent['location']; ?>
-                            </li>
-                        </ul>
-                        <p><?php echo substr(decode($megaEvent['description']), 0, 500); ?>...</p>
-                    </div>
-                    <div class="events-item-link">
-                        <a href="mega.php?r=event&id=<?php echo $megaEvent['id']; ?>" class="hvr-push">Read More</a>
-                    </div>
-                    <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] === 1) { ?>
-                        <hr>
-                        <div class="col-xs-12" style="padding-bottom:20px;display:flex;justify-content:space-around">
-                            <a class="deleteCheck"
-                               href="mega.php?r=delete&id=<?php echo $megaEvent['id']; ?>">
-                                <div class="btn btn-danger"><i class="fa fa-remove"></i> Delete</div>
-                            </a>
-                            <a href="mega.php?r=edit&id=<?php echo $megaEvent['id']; ?>">
-                                <div class="btn btn-success"><i class="fa fa-edit"></i> Edit</div>
-                            </a>
-                        </div>
-                    <?php } ?>
-                </div>
-            </div>
-        <?php } ?>
-                </div>
-            </div>
-        </section>
-        <hr style="margin:0">
-    <?php } ?>
     <?php
     $query = $con->prepare('SELECT * FROM events WHERE `mega` = 0 ORDER BY DATE DESC');
     $query->execute();
@@ -111,7 +50,6 @@ if ($action === 'all') {
         <section class="events-list">
             <div class="container">
                 <div id="events-list" class="row">
-                    <h2 class="h1 text-center" style="margin:-80px 0 20px">Normal Events</h2>
     <?php foreach ($events as $event) { ?>
         <div class="col-xs-6 col-lg-3 <?php echo $event['event_type'];?>">
             <div class="events-item">
