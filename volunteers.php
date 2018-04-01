@@ -5,7 +5,6 @@ $title = 'volunteers';
 $caption = '<h2>Volunteers</h2>';
 $returnTop = false;
 $action = isset($_GET['r']) ? $_GET['r'] : 'all';
-$noBtns = false;
 if ($action === 'add' && isset($_SESSION['admin']) && $_SESSION['admin'] === 1) {
     $caption = '<h2>Add Volunter</h2>';
 }
