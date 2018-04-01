@@ -196,7 +196,6 @@
 
 /*Volunteers Page*/
 .volunteers .imageOfVolunteer {
-    height:200px;
     display: flex;
     justify-content: flex-end;
     align-items: flex-start;
