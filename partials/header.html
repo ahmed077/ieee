@@ -79,26 +79,28 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Activities <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li class="<?php if (preg_match('/(event)/i',$title)) {echo 'active';} ?>"><a href="events.php">Events</a></li>
+                                <li class="<?php if (preg_match('/(mega)/i',$title)) {echo 'active';} ?>"><a href="mega.php">Mega Events</a></li>
+
                                 <li class="<?php if ($title === 'news') {echo 'active';} ?>"><a href="news.php">News</a></li>
-                                <li class="<?php if ($title === 'schedule') {echo 'active';} ?>"><a href="schedule.html">Schedule</a></li>
+                                <li class="<?php if ($title === 'schedule') {echo 'active';} ?>"><a href="schedule.php">Schedule</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Our Team<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li class="<?php if ($title === 'board') {echo 'active';} ?>"><a href="board.html">Board</a></li>
+                                <li class="<?php if ($title === 'board') {echo 'active';} ?>"><a href="board.php">Board</a></li>
                                 <li class="<?php if ($title === 'volunteers') {echo 'active';} ?>"><a href="volunteers.php">Volunteers</a></li>
 
                             </ul>
                         </li>
                         <li class="<?php if ($title === 'gallery') {echo 'active';} ?>"><a href="gallery.php">Gallery</a></li>
-                        <li class="<?php if ($title === 'courses') {echo 'active';} ?>"><a href="courses.html">Courses</a></li>
+                        <li class="<?php if ($title === 'courses') {echo 'active';} ?>"><a href="courses.php">Courses</a></li>
                         <!--<li class="<?php if ($title === 'benefits') {echo 'active';} ?>"><a href="benefits.html">benefits</a></li>-->
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">About Us<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li class="<?php if ($title === 'contact') {echo 'active';} ?>"><a href="contact.html">Contact</a></li>
-                                <li class="<?php if ($title === 'committee') {echo 'active';} ?>"><a href="committee.html">Committees</a></li>
+                                <li class="<?php if ($title === 'contact') {echo 'active';} ?>"><a href="contact.php">Contact</a></li>
+                                <li class="<?php if ($title === 'committee') {echo 'active';} ?>"><a href="committee.php">Committees</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -116,7 +118,7 @@
     </div>
 </header>
 <?php
-$titles = ['home','events','events-single','news','news-single','contact','page-not-found','schedule','login','sign-up','404', 'volunteers', 'contact-login contact','gallery'];
+$titles = ['home','events','events-single','news','news-single','contact','page-not-found','schedule','login','sign-up','404', 'volunteers', 'contact-login contact','gallery','schedule','contact'];
 $title=strtolower($title);
 if (!in_array($title, $titles)) {
     if (!isset($headerClass)){
