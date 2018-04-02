@@ -133,10 +133,16 @@
 .site-footer .footer-menu {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
 }
 @media(min-width:975px) {
     .site-footer .footer-logo{
         background-color:unset;
+    }
+}
+@media(max-width:540px) {
+    .site-footer .footer-menu .footer-links{
+        width:100%;
     }
 }
 /*custom styles*/
@@ -199,4 +205,8 @@
     display: flex;
     justify-content: flex-end;
     align-items: flex-start;
+}
+/*Courses Page*/
+.details {
+    height:auto;
 }
