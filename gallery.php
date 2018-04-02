@@ -20,7 +20,7 @@ if (isset($_SESSION['admin']) && in_array($_SESSION['admin'],[1,2])) {
     require_once 'partials/header.html';
     $query=$con->prepare("SELECT t1.*, t2.title FROM gallery AS t1 INNER JOIN events AS t2 WHERE t2.id=t1.event_id");
     $query->execute(array());
-    $images = $query->fetchAll(PDO::FETCH_ASSOC);$image=$images[0];
+    $images = $query->fetchAll(PDO::FETCH_ASSOC);
     $admin = (isset($_SESSION['admin']) && in_array(intval($_SESSION['admin']),[1,2,3]))? true : false;
     ?>
     <section class="gallery-list">

@@ -19,8 +19,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $query->execute(array($name, $faculty, $semester, $email, $facebook, $mobile, $membership, $id));
     if ($query->rowCount() > 0) { ?>
         <div class="text-success text-center others-section"><i class="fa-5x fa fa-check-circle-o"></i>
-            <p class="lead">Success</p></div>
+            <p class="lead">Success</p>
+        </div>
     <?php
+        header("refresh:2;url=events.php?r=event&id=$id");
+        exit();
     } else { ?>
         <div class="alert alert-danger">Sorry Something Went Wrong, Please Try Again.</div>
     <?php }
